@@ -16,27 +16,37 @@ int main(void)
 		{ .id = 's',  .replace = "ea" },
 		{ .id = 'e',  .replace = "a" }
 	};
-	const int rules_length = 1;
+	const int rules_length = 2;
 
 	char* input = "s";
 
-	for(int for_i=0; for_i<2; for_i++) {
+//	for(int for_i=0; for_i<2; for_i++) {
 		char* output = calloc(sizeof(char), 255);
+		strcpy(output, input);
 		int output_i = 0;
 
-		for(int input_i = 0; input_i < strlen(input); input_i++) {
+		int output_len = strlen(output);
+
+		for(
+				int input_i = 0;
+				input_i < output_len && input_i < 255;
+				input_i++
+			) {
 			for(int i = 0; i < rules_length; i++) {
-				if( input[input_i] == rules[i].id ) {
+				if( output[input_i] == rules[i].id ) {
 					strcpy(&output[output_i], rules[i].replace);
 					output_i += strlen(rules[i].replace);
 				} else {
-					strcpy(&output[output_i], &input[input_i]);
+					if(output_i != input_i)
+						output[output_i] = output[input_i];
 					output_i++;
 				}
 			}
+			//sleep(1);
+			//printf("still going\n");
 		}
 		printf("%s\n", output);
-	}
+//	}
 
 	printf("We finnished gennerating the map\n");
 
