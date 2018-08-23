@@ -1,3 +1,5 @@
+# Custom
+*.dSYM/
 
 # Created by https://www.gitignore.io/api/vim,osx,node,linux,emacs,cmake,windows
 

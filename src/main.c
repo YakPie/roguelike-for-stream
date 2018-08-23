@@ -7,24 +7,36 @@ struct Rules {
 	char* replace;
 };
 
+char* replace(
+		struct Rules* rules,
+		int rules_length,
+		char check
+		)
+{
+	for(int i = 0; i < rules_length; i++) {
+		if( check == rules[i].id ) {
+			return rules[i].replace;
+		}
+	}
+	return NULL; // No match
+}
+
 int main(void)
 {
-	printf("Welcome to my awesome game\n");
-	printf("Its some roguelike thingy\n");
-
 	struct Rules rules[] = {
 		{ .id = 's',  .replace = "ea" },
 		{ .id = 'e',  .replace = "a" }
 	};
 	const int rules_length = 2;
 
-	char* input = "s";
+//	char* input = "s";
+	char* output = calloc(sizeof(char), 255);
+	char* input  = calloc(sizeof(char), 255);
+	strcpy(input, "s");
 
-//	for(int for_i=0; for_i<2; for_i++) {
-		char* output = calloc(sizeof(char), 255);
+	for(int for_i=0; for_i<2; for_i++) {
 		strcpy(output, input);
 		int output_i = 0;
-
 		int output_len = strlen(output);
 
 		for(
@@ -32,27 +44,30 @@ int main(void)
 				input_i < output_len && input_i < 255;
 				input_i++
 			) {
-			for(int i = 0; i < rules_length; i++) {
-				if( output[input_i] == rules[i].id ) {
-					strcpy(&output[output_i], rules[i].replace);
-					output_i += strlen(rules[i].replace);
-				} else {
-					if(output_i != input_i)
-						output[output_i] = output[input_i];
-					output_i++;
-				}
+	
+			char* ret = replace(
+					rules,
+					rules_length,
+					input[input_i]
+				);
+
+			if(ret != NULL) { // found a replacement
+				// copy the new replacement into the output
+				strcpy(&output[output_i], ret);
+				output_i += strlen(ret);
+			} else {
+				// copy the input to the output, no change happens
+				output[output_i] = input[input_i];
+				output_i++;
 			}
-			//sleep(1);
-			//printf("still going\n");
 		}
+
 		printf("%s\n", output);
-//	}
+		memcpy(input, output, 255);
+	}
 
-	printf("We finnished gennerating the map\n");
-
-	int c;
-	while(c = getchar())
-		printf("%c\n", c);
+	free(output);
+	free(input);
 
 	return 0;
 }
