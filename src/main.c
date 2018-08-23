@@ -29,9 +29,9 @@ int main(void)
 	};
 	const int rules_length = 2;
 
-//	char* input = "s";
-	char* output = calloc(sizeof(char), 255);
-	char* input  = calloc(sizeof(char), 255);
+	const int buffer_size = 1024;
+	char* output = calloc(sizeof(char), buffer_size);
+	char* input  = calloc(sizeof(char), buffer_size);
 	strcpy(input, "s");
 
 	for(int for_i=0; for_i<2; for_i++) {
@@ -41,7 +41,7 @@ int main(void)
 
 		for(
 				int input_i = 0;
-				input_i < output_len && input_i < 255;
+				input_i < output_len && input_i < buffer_size;
 				input_i++
 			) {
 	
@@ -63,7 +63,7 @@ int main(void)
 		}
 
 		printf("%s\n", output);
-		memcpy(input, output, 255);
+		memcpy(input, output, buffer_size);
 	}
 
 	free(output);
