@@ -23,16 +23,26 @@ char* replace(
 
 int main(void)
 {
+	/*
+	 *  s = start of the level / entry
+	 *  e = end of the level
+	 *  l = create a room to the left
+	 *  r = create a room to the right
+	 *  f = create a room forward
+	 *  b = backtrack (maybe in the future?)
+	 */
 	struct Rules rules[] = {
-		{ .id = 's',  .replace = "ea" },
-		{ .id = 'e',  .replace = "a" }
+		{ .id = 's',  .replace = "sl" },
+		{ .id = 's',  .replace = "sr" },
+		{ .id = 's',  .replace = "sf" },
 	};
 	const int rules_length = 2;
 
 	const int buffer_size = 1024;
 	char* output = calloc(sizeof(char), buffer_size);
 	char* input  = calloc(sizeof(char), buffer_size);
-	strcpy(input, "s");
+	strcpy(input, "se");
+	printf("%s\n", input);
 
 	for(int for_i=0; for_i<2; for_i++) {
 		strcpy(output, input);
