@@ -104,6 +104,7 @@ int main(void)
 		char* input  = calloc(sizeof(char), buffer_size);
 		strcpy(input, starting_rules);
 
+		// Replacement rules applying
 		for(int for_i=0; for_i<num_replacements; for_i++) {
 			strcpy(output, input);
 			int output_i = 0;
@@ -182,6 +183,8 @@ int main(void)
 			}
 			char* room_name = calloc(sizeof(char), 2);
 			room_name[0] = output[i];
+			// add_room( pos );
+			// add_edges( prev_pos, pos );
 			mvprintw(pos.y*2, pos.x*2, room_name);
 		}
 
