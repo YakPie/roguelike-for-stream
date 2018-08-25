@@ -15,8 +15,34 @@ struct Point {
 };
 
 struct LinkedList {
-	struct Point point;
+	struct Point point; // To make this generic, we might have void*
 	struct LinkedList* next;
+};
+
+struct Room {
+	struct Point point;
+	char type;
+};
+
+struct Edge {
+	struct Point from;
+	struct Point to;
+};
+
+struct Vec {
+	// So much memory is allocated
+	size_t current_capacity; 
+	// Size of whatever is kept in the vector
+	size_t size; 
+	// realloc, how much more memory do you need
+	size_t allocated_gap; 
+	// amable1408: You even make a union to use stack allocation for the first N bytes and then if it's higher use heap
+	void * data;
+};
+
+struct Graph {
+	struct Room nodes; // this should be an array
+	struct Edge edges; // this should be an array
 };
 
 struct Point pop(struct LinkedList* root) {
@@ -183,10 +209,12 @@ int main(void)
 			}
 			char* room_name = calloc(sizeof(char), 2);
 			room_name[0] = output[i];
-			// add_room( pos );
-			// add_edges( prev_pos, pos );
+			// add_room( dag, pos );
+			// add_edges( dag, prev_pos, pos );
 			mvprintw(pos.y*2, pos.x*2, room_name);
 		}
+
+		// walk_dag_and_print
 
 		refresh();
 		getch();
