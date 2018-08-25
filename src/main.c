@@ -9,6 +9,41 @@ struct Rules {
 	char* replace;
 };
 
+struct Point {
+	int x;
+	int y;
+};
+
+struct LinkedList {
+	struct Point point;
+	struct LinkedList* next;
+};
+
+struct Point pop(struct LinkedList* root) {
+	struct LinkedList* current = root;
+	struct LinkedList* past = root;
+	while(current->next != NULL) {
+		past = current;
+		current = current->next;
+	}
+
+	struct Point ret = current->point;
+	free(current);
+	past->next = NULL;
+
+	return ret;
+}
+
+void push(struct LinkedList* root, struct Point point) {
+	struct LinkedList* current = root;
+	while(current->next != NULL)
+		current = current->next;
+
+	current->next = malloc(sizeof(struct LinkedList));
+	current->next->point = point;
+	current->next->next = NULL;
+}
+
 void debugRuleArray(struct Rules* rules, int rules_length)
 {
 	printf("Rules: \n");
@@ -100,12 +135,20 @@ int main(void)
 
 		// Setup ncurses
 		initscr();
-		int row, col, x, y, tmp_x, tmp_y;
+		int row, col;
 		getmaxyx(stdscr, row, col);
 		mvprintw(1, 10, "Dungeon overview:");
 		mvprintw(2, 10, "Hit a random key to get a new dungeon");
-		tmp_y = y = row / 2;
-		tmp_x = x = col / 2;
+
+		struct Point pos = {
+			.x = (row - 5) / 2,
+			.y = col / 4
+		};
+
+		struct Point tmp_pos = pos;
+		struct LinkedList* stack = malloc(sizeof(struct LinkedList));
+		stack->point = tmp_pos;
+		stack->next = NULL; 
 
 		for(int i=0; i < strlen(output); i++) {
 			switch(output[i])
@@ -113,27 +156,29 @@ int main(void)
 				case 's':
 					break;
 				case 'l':
-					x--;
+					pos.x--;
 					break;
 				case 'r':
-					x++;
+					pos.x++;
 					break;
 				case 'f':
 				case 'e':
-					y--;
+					pos.y--;
 					break;
 				case 'p': // pushing
-					tmp_x = x;
-					tmp_y = y;
+					tmp_pos.x = pos.x;
+					tmp_pos.y = pos.y;
+					push(stack, tmp_pos);
 					break;
 				case 'o': // pop
-					x = tmp_x;
-					y = tmp_y;
+					tmp_pos = pop(stack);
+					pos.x = tmp_pos.x;
+					pos.y = tmp_pos.y;
 					break;
 			}
 			char* room_name = calloc(sizeof(char), 2);
 			room_name[0] = output[i];
-			mvprintw(y, x, room_name);
+			mvprintw(pos.y*2, pos.x*2, room_name);
 		}
 
 		refresh();
