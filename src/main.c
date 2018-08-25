@@ -1,18 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 struct Rules {
 	char id;
 	char* replace;
 };
 
-char* replace(
-		struct Rules* rules,
-		int rules_length,
-		char check
-		)
+void debugRuleArray(struct Rules* rules, int rules_length)
 {
+	printf("Rules: \n");
+	for(int i = 0; i < rules_length; i++) {
+		printf("Rule %c => %s\n", rules[i].id, rules[i].replace);
+	}
+
+}
+
+char* replace(struct Rules* rules, int rules_length, char check)
+{
+	// Shuffle up the rules array
+	for(int i = 0; i < rules_length; i++) {
+		size_t random = rand() % rules_length;
+	//	printf("%zu\n", random);
+
+		struct Rules tmp = rules[random];
+		rules[random] = rules[i];
+		rules[i] = tmp;
+	}
+
 	for(int i = 0; i < rules_length; i++) {
 		if( check == rules[i].id ) {
 			return rules[i].replace;
@@ -23,6 +39,8 @@ char* replace(
 
 int main(void)
 {
+	srand(time(NULL));
+
 	/*
 	 *  s = start of the level / entry
 	 *  e = end of the level
@@ -36,7 +54,7 @@ int main(void)
 		{ .id = 's',  .replace = "sr" },
 		{ .id = 's',  .replace = "sf" },
 	};
-	const int rules_length = 2;
+	const int rules_length = 3;
 
 	const int buffer_size = 1024;
 	char* output = calloc(sizeof(char), buffer_size);
@@ -44,7 +62,7 @@ int main(void)
 	strcpy(input, "se");
 	printf("%s\n", input);
 
-	for(int for_i=0; for_i<2; for_i++) {
+	for(int for_i=0; for_i<10; for_i++) {
 		strcpy(output, input);
 		int output_i = 0;
 		int output_len = strlen(output);
