@@ -15,7 +15,6 @@ void debugRuleArray(struct Rules* rules, int rules_length)
 	for(int i = 0; i < rules_length; i++) {
 		printf("Rule %c => %s\n", rules[i].id, rules[i].replace);
 	}
-
 }
 
 char* replace(struct Rules* rules, int rules_length, char check)
@@ -47,17 +46,23 @@ int main(void)
 	 *  r = create a room to the right
 	 *  f = create a room forward
 	 *  b = backtrack (maybe in the future?)
+	 *  p = push rules (pushes the current position to the stack)
+	 *  o = pop rules (pops position of the stack)
 	 */
 	struct Rules rules[] = {
+//		{ .id = 'f',  .replace = "s" },
 		{ .id = 's',  .replace = "sl" },
 		{ .id = 's',  .replace = "sr" },
 		{ .id = 's',  .replace = "sf" },
-		{ .id = 'l',  .replace = "llffrr" },
+//		{ .id = 'l',  .replace = "ll" },
+//		{ .id = 'l',  .replace = "llplfffrror" },
+		{ .id = 's',  .replace = "spllllfffffffo" },
+		{ .id = 's',  .replace = "sprrrrrro" },
 	};
-	const int rules_length = 3;
+	const int rules_length = sizeof(rules)/sizeof(*rules);
 
 	while(true) {
-		const int buffer_size = 1024;
+		const int buffer_size = 1024 * 10;
 		char* output = calloc(sizeof(char), buffer_size);
 		char* input  = calloc(sizeof(char), buffer_size);
 		strcpy(input, "se");
@@ -95,10 +100,12 @@ int main(void)
 
 		// Setup ncurses
 		initscr();
-		int row, col, x, y;
+		int row, col, x, y, tmp_x, tmp_y;
 		getmaxyx(stdscr, row, col);
-		y = row / 2;
-		x = col / 2;
+		mvprintw(1, 10, "Dungeon overview:");
+		mvprintw(2, 10, "Hit a random key to get a new dungeon");
+		tmp_y = y = row / 2;
+		tmp_x = x = col / 2;
 
 		for(int i=0; i < strlen(output); i++) {
 			switch(output[i])
@@ -114,6 +121,14 @@ int main(void)
 				case 'f':
 				case 'e':
 					y--;
+					break;
+				case 'p': // pushing
+					tmp_x = x;
+					tmp_y = y;
+					break;
+				case 'o': // pop
+					x = tmp_x;
+					y = tmp_y;
 					break;
 			}
 			char* room_name = calloc(sizeof(char), 2);
