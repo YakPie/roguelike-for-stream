@@ -77,32 +77,34 @@ int main(void)
 	/*
 	 *  s = start of the level / entry
 	 *  e = end of the level
-	 *  l = create a room to the left
-	 *  r = create a room to the right
-	 *  f = create a room forward
+	 *  l = moved left and create a room
+	 *  r = move right and create a room
+	 *  f = move upward/forward and create a room
 	 *  b = backtrack (maybe in the future?)
 	 *  p = push rules (pushes the current position to the stack)
 	 *  o = pop rules (pops position of the stack)
 	 */
 	struct Rules rules[] = {
 //		{ .id = 'f',  .replace = "s" },
-		{ .id = 's',  .replace = "sl" },
-		{ .id = 's',  .replace = "sr" },
-		{ .id = 's',  .replace = "sf" },
+//		{ .id = 's',  .replace = "sl" },
+//		{ .id = 's',  .replace = "sr" },
+//		{ .id = 's',  .replace = "sf" },
 //		{ .id = 'l',  .replace = "ll" },
 //		{ .id = 'l',  .replace = "llplfffrror" },
-		{ .id = 's',  .replace = "spllllfffffffo" },
-		{ .id = 's',  .replace = "sprrrrrro" },
+//		{ .id = 's',  .replace = "spllllfffffffo" },
+//		{ .id = 's',  .replace = "sprrrrrro" },
 	};
+	char* starting_rules = "sfpllffpfforrrorrffe";
+	int num_replacements = 1;
 	const int rules_length = sizeof(rules)/sizeof(*rules);
 
 	while(true) {
 		const int buffer_size = 1024 * 10;
 		char* output = calloc(sizeof(char), buffer_size);
 		char* input  = calloc(sizeof(char), buffer_size);
-		strcpy(input, "se");
+		strcpy(input, starting_rules);
 
-		for(int for_i=0; for_i<20; for_i++) {
+		for(int for_i=0; for_i<num_replacements; for_i++) {
 			strcpy(output, input);
 			int output_i = 0;
 			int output_len = strlen(output);
@@ -139,6 +141,8 @@ int main(void)
 		getmaxyx(stdscr, row, col);
 		mvprintw(1, 10, "Dungeon overview:");
 		mvprintw(2, 10, "Hit a random key to get a new dungeon");
+		mvprintw(3, 10, "Dungeon rule:");
+		mvprintw(3, 25, output);
 
 		struct Point pos = {
 			.x = (row - 5) / 2,
