@@ -29,6 +29,13 @@ struct Edge {
 	struct Point to;
 };
 
+enum Direction {
+	UP = 0,
+	RIGHT,
+	DOWN,
+	LEFT
+};
+
 struct Vec {
 	// So much memory is allocated
 	size_t current_capacity; 
@@ -109,6 +116,9 @@ int main(void)
 	 *  b = backtrack (maybe in the future?)
 	 *  p = push rules (pushes the current position to the stack)
 	 *  o = pop rules (pops position of the stack)
+	 *  q = turn clockwise
+	 *  a = turn anti-clockwise
+	 *  0 = reset direction
 	 */
 	struct Rules rules[] = {
 //		{ .id = 'f',  .replace = "s" },
@@ -116,11 +126,14 @@ int main(void)
 		{ .id = 's',  .replace = "sr" },
 		{ .id = 's',  .replace = "sf" },
 //		{ .id = 'l',  .replace = "ll" },
+//		{ .id = 'l',  .replace = "l" },
 //		{ .id = 'l',  .replace = "llplfffrror" },
-//		{ .id = 's',  .replace = "spllllfffffffo" },
+		{ .id = 's',  .replace = "spllffffrro" },
 //		{ .id = 's',  .replace = "sprrrrrro" },
+		{ .id = 's',  .replace = "safqfqf" },
 	};
-	char* starting_rules = "sfpllffpfforrrorrffe";
+//	char* starting_rules = "sfpllffpfforrrorrffe";
+	char* starting_rules = "se";
 	int num_replacements = 10;
 	const int rules_length = sizeof(rules)/sizeof(*rules);
 
@@ -181,6 +194,8 @@ int main(void)
 		stack->point = tmp_pos;
 		stack->next = NULL; 
 
+		int direction = 0;
+
 		for(int i=0; i < strlen(output); i++) {
 			switch(output[i])
 			{
@@ -194,7 +209,20 @@ int main(void)
 					break;
 				case 'f':
 				case 'e':
-					pos.y--;
+					switch(direction) {
+						case UP:
+							pos.y--;
+							break;
+						case LEFT:
+							pos.x--;
+							break;
+						case RIGHT:
+							pos.x++;
+							break;
+						case DOWN:
+							pos.y++;
+							break;
+					}
 					break;
 				case 'p': // pushing
 					tmp_pos.x = pos.x;
@@ -205,6 +233,15 @@ int main(void)
 					tmp_pos = pop(stack);
 					pos.x = tmp_pos.x;
 					pos.y = tmp_pos.y;
+					break;
+				case 'q': // clockwise
+					direction = (direction+1)%4;
+					break;
+				case 'a': // anti-clockwise
+					direction = (direction+4-1)%4;
+					break;
+				case '0':
+					direction = UP;
 					break;
 			}
 			char* room_name = calloc(sizeof(char), 2);
