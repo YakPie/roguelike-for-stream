@@ -4,104 +4,8 @@
 #include <time.h>
 #include <ncurses.h>
 
-struct Rules {
-	char id;
-	char* replace;
-};
-
-struct Point {
-	int x;
-	int y;
-};
-
-struct LinkedList {
-	struct Point point; // To make this generic, we might have void*
-	struct LinkedList* next;
-};
-
-struct Room {
-	struct Point point;
-	char type;
-};
-
-struct Edge {
-	struct Point from;
-	struct Point to;
-};
-
-enum Direction {
-	UP = 0,
-	RIGHT,
-	DOWN,
-	LEFT
-};
-
-struct Vec {
-	// So much memory is allocated
-	size_t current_capacity; 
-	// Size of whatever is kept in the vector
-	size_t size; 
-	// realloc, how much more memory do you need
-	size_t allocated_gap; 
-	// amable1408: You even make a union to use stack allocation for the first N bytes and then if it's higher use heap
-	void * data;
-};
-
-struct Graph {
-	struct Room nodes; // this should be an array
-	struct Edge edges; // this should be an array
-};
-
-struct Point pop(struct LinkedList* root) {
-	struct LinkedList* current = root;
-	struct LinkedList* past = root;
-	while(current->next != NULL) {
-		past = current;
-		current = current->next;
-	}
-
-	struct Point ret = current->point;
-	free(current);
-	past->next = NULL;
-
-	return ret;
-}
-
-void push(struct LinkedList* root, struct Point point) {
-	struct LinkedList* current = root;
-	while(current->next != NULL)
-		current = current->next;
-
-	current->next = malloc(sizeof(struct LinkedList));
-	current->next->point = point;
-	current->next->next = NULL;
-}
-
-void debugRuleArray(struct Rules* rules, int rules_length)
-{
-	printf("Rules: \n");
-	for(int i = 0; i < rules_length; i++) {
-		printf("Rule %c => %s\n", rules[i].id, rules[i].replace);
-	}
-}
-
-char* replace(struct Rules* rules, int rules_length, char check)
-{
-	// Shuffle up the rules array
-	for(int i = 0; i < rules_length; i++) {
-		size_t random = rand() % rules_length;
-		struct Rules tmp = rules[random];
-		rules[random] = rules[i];
-		rules[i] = tmp;
-	}
-
-	for(int i = 0; i < rules_length; i++) {
-		if( check == rules[i].id ) {
-			return rules[i].replace;
-		}
-	}
-	return NULL; // No match
-}
+#include "components/components.h"
+#include "systems/pcg_dungeon.h"
 
 int main(void)
 {
@@ -138,42 +42,12 @@ int main(void)
 	const int rules_length = sizeof(rules)/sizeof(*rules);
 
 	while(true) {
-		const int buffer_size = 1024 * 10;
-		char* output = calloc(sizeof(char), buffer_size);
-		char* input  = calloc(sizeof(char), buffer_size);
-		strcpy(input, starting_rules);
-
-		// Replacement rules applying
-		for(int for_i=0; for_i<num_replacements; for_i++) {
-			strcpy(output, input);
-			int output_i = 0;
-			int output_len = strlen(output);
-
-			for(
-					int input_i = 0;
-					input_i < output_len && input_i < buffer_size;
-					input_i++
-				) {
-		
-				char* ret = replace(
-						rules,
-						rules_length,
-						input[input_i]
-					);
-
-				if(ret != NULL) { // found a replacement
-					// copy the new replacement into the output
-					strcpy(&output[output_i], ret);
-					output_i += strlen(ret);
-				} else {
-					// copy the input to the output, no change happens
-					output[output_i] = input[input_i];
-					output_i++;
-				}
-			}
-			memcpy(input, output, buffer_size);
-		}
-		free(input);
+		char* output = rule_engine(
+			rules,
+			starting_rules,
+			num_replacements,
+			rules_length
+		);
 
 		// Setup ncurses
 		initscr();

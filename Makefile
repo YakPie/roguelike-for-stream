@@ -1,7 +1,8 @@
 all: src/main
 
 src/main: src/main.c
-	gcc -g src/main.c -lncurses -o ./main
+	@mkdir -p build/
+	gcc -g src/main.c -lncurses -Ibuild -o ./build/main
 
 clean:
-	@rm ./main
+	@rm ./build/*
