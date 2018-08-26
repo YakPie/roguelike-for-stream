@@ -68,4 +68,80 @@ char* rule_engine(
 	return output;
 }
 
+struct Graph* create_dag_from_dungeonrule(char *output)
+{
+	struct Point pos = {
+		.x = 0,
+		.y = 0
+	};
+
+	struct Point tmp_pos = pos;
+	struct Point prev_pos = pos;
+	struct LinkedList* stack = malloc(sizeof(struct LinkedList));
+	stack->point = tmp_pos;
+	stack->next = NULL; 
+
+	int direction = 0;
+	struct Graph* dag = calloc(sizeof(struct Graph), 1);
+
+	for(int i=0; i < strlen(output); i++) {
+		prev_pos = pos;
+
+		switch(output[i])
+		{
+			case 's':
+				break;
+			case 'l':
+				pos.x--;
+				break;
+			case 'r':
+				pos.x++;
+				break;
+			case 'f':
+			case 'e':
+				switch(direction) {
+					case UP:
+						pos.y--;
+						break;
+					case LEFT:
+						pos.x--;
+						break;
+					case RIGHT:
+						pos.x++;
+						break;
+					case DOWN:
+						pos.y++;
+						break;
+				}
+				break;
+			case 'p': // pushing
+				tmp_pos.x = pos.x;
+				tmp_pos.y = pos.y;
+				push(stack, tmp_pos);
+				break;
+			case 'o': // pop
+				tmp_pos = pop(stack);
+				pos.x = tmp_pos.x;
+				pos.y = tmp_pos.y;
+				break;
+			case 'q': // clockwise
+				direction = (direction+1)%4;
+				break;
+			case 'a': // anti-clockwise
+				direction = (direction+4-1)%4;
+				break;
+			case '0':
+				direction = UP;
+				break;
+		}
+
+		add_room( dag, pos, output[i] );
+		add_edges( dag, prev_pos, pos );
+	}
+
+	return dag;
+}
+
+
+
 #endif
