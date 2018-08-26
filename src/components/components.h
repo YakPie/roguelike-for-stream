@@ -76,6 +76,9 @@ int add_edges(
 	if(dag->number_of_edges == 1024*4)
 		return SOMETHING_BROKE;
 
+	if( from.x == to.x && from.y == to.y )
+		return ALL_GOOD;
+
 	// check that the edge doesn't allready exist
 	for(int i=0; i < dag->number_of_edges; i++) {
 		if(
