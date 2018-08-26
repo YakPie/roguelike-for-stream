@@ -112,16 +112,16 @@ int main(void)
 	 */
 	struct Rules rules[] = {
 //		{ .id = 'f',  .replace = "s" },
-//		{ .id = 's',  .replace = "sl" },
-//		{ .id = 's',  .replace = "sr" },
-//		{ .id = 's',  .replace = "sf" },
+		{ .id = 's',  .replace = "sl" },
+		{ .id = 's',  .replace = "sr" },
+		{ .id = 's',  .replace = "sf" },
 //		{ .id = 'l',  .replace = "ll" },
 //		{ .id = 'l',  .replace = "llplfffrror" },
 //		{ .id = 's',  .replace = "spllllfffffffo" },
 //		{ .id = 's',  .replace = "sprrrrrro" },
 	};
 	char* starting_rules = "sfpllffpfforrrorrffe";
-	int num_replacements = 1;
+	int num_replacements = 10;
 	const int rules_length = sizeof(rules)/sizeof(*rules);
 
 	while(true) {
