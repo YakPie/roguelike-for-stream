@@ -28,7 +28,7 @@ char* rule_engine(
 		const int rules_length
 )
 {
-	const int buffer_size = 1024 * 10;
+	const int buffer_size = 1024;
 	char* output = calloc(sizeof(char), buffer_size);
 	char* input  = calloc(sizeof(char), buffer_size);
 	strcpy(input, starting_rules);
@@ -67,8 +67,5 @@ char* rule_engine(
 	free(input);
 	return output;
 }
-
-
-
 
 #endif

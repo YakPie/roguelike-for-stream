@@ -17,7 +17,7 @@ struct LinkedList {
 };
 
 struct Room {
-	struct Point point;
+	struct Point position;
 	char type;
 };
 
@@ -33,21 +33,69 @@ enum Direction {
 	LEFT
 };
 
-struct Vec {
-	// So much memory is allocated
-	size_t current_capacity; 
-	// Size of whatever is kept in the vector
-	size_t size; 
-	// realloc, how much more memory do you need
-	size_t allocated_gap; 
-	// amable1408: You even make a union to use stack allocation for the first N bytes and then if it's higher use heap
-	void * data;
+enum ReturnCodes {
+	ALL_GOOD = 0,
+	SOMETHING_BROKE = 1
 };
 
 struct Graph {
-	struct Room nodes; // this should be an array
-	struct Edge edges; // this should be an array
+	struct Room nodes[1024] ; // this should be an array
+	struct Edge edges[1024*4]; // this should be an array
+	unsigned int number_of_nodes;
+	unsigned int number_of_edges;
 };
+
+int add_room( struct Graph* dag, struct Point pos, char type ) {
+	if(dag->number_of_nodes == 1024)
+		return SOMETHING_BROKE;
+
+	// check that the room doesn't allready exist
+	for(int i=0; i < dag->number_of_nodes; i++) {
+		if(
+			dag->nodes[i].position.x == pos.x && 
+			dag->nodes[i].position.y == pos.y
+		)
+			return ALL_GOOD;
+	}
+
+	struct Room room = {
+		.position = pos,
+		.type = type
+	};
+	dag->nodes[dag->number_of_nodes] = room;
+	dag->number_of_nodes++;
+
+	return ALL_GOOD;
+}
+
+int add_edges(
+		struct Graph* dag,
+		struct Point from,
+		struct Point to 
+) {
+	if(dag->number_of_edges == 1024*4)
+		return SOMETHING_BROKE;
+
+	// check that the edge doesn't allready exist
+	for(int i=0; i < dag->number_of_edges; i++) {
+		if(
+			dag->edges[i].from.x == from.x && 
+			dag->edges[i].from.y == from.y &&
+			dag->edges[i].to.x == to.x && 
+			dag->edges[i].to.y == to.y
+		)
+			return ALL_GOOD;
+	}
+
+ 	struct Edge edge = {
+		.from = from,
+		.to = to
+	};
+	dag->edges[dag->number_of_edges] = edge;
+	dag->number_of_edges++;
+
+	return ALL_GOOD;
+}
 
 struct Point pop(struct LinkedList* root) {
 	struct LinkedList* current = root;

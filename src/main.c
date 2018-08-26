@@ -17,7 +17,6 @@ int main(void)
 	 *  l = moved left and create a room
 	 *  r = move right and create a room
 	 *  f = move upward/forward and create a room
-	 *  b = backtrack (maybe in the future?)
 	 *  p = push rules (pushes the current position to the stack)
 	 *  o = pop rules (pops position of the stack)
 	 *  q = turn clockwise
@@ -64,13 +63,20 @@ int main(void)
 		};
 
 		struct Point tmp_pos = pos;
+		struct Point prev_pos = pos;
 		struct LinkedList* stack = malloc(sizeof(struct LinkedList));
 		stack->point = tmp_pos;
 		stack->next = NULL; 
 
 		int direction = 0;
+		struct Graph dag = {
+			.number_of_nodes = 0,
+			.number_of_edges = 0
+		};
 
 		for(int i=0; i < strlen(output); i++) {
+			prev_pos = pos;
+
 			switch(output[i])
 			{
 				case 's':
@@ -120,8 +126,9 @@ int main(void)
 			}
 			char* room_name = calloc(sizeof(char), 2);
 			room_name[0] = output[i];
-			// add_room( dag, pos );
-			// add_edges( dag, prev_pos, pos );
+
+			add_room( &dag, pos, output[i] );
+			add_edges( &dag, prev_pos, pos );
 			mvprintw(pos.y*2, pos.x*2, room_name);
 		}
 
