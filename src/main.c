@@ -10,34 +10,6 @@
 #include "systems/pcg_dungeon.h"
 #include "systems/rendering_ncurses.h"
 
-void print_room_info(struct Graph* dag, int x, int y) {
-	struct Point offset = get_offset();
-
-	for(int i=0; i<dag->number_of_nodes; i++) {
-		if(dag->nodes[i].position.x == x &&
-			dag->nodes[i].position.y == y)
-		{
-			mvprintw(7, 10, "Room debug:");
-			int monsters_n = dag->nodes[i].number_of_monsters;
-			for(int j=0; j<monsters_n; j++) {
-				switch(dag->nodes[i].monsters[j].type) {
-					case MONSTER_SLIME:
-						mvprintw(8 + j, 10, " - Slime");
-						break;
-					case MONSTER_GOBLIN:
-						mvprintw(8 + j, 10, " - Goblin");
-						break;
-				}
-			}
-			break;
-		}
-	}
-
-	//const wchar_t ghost_emoji = 0x1F47B;
-	//mvprintw(y * 2 + offset.y, x * 2 + offset.x, "%lc", ghost_emoji);
-	mvprintw(y * 2 + offset.y, x * 2 + offset.x, "@");
-}
-
 int main(void)
 {
 	srand(time(NULL));
