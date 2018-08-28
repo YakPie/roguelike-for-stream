@@ -16,9 +16,30 @@ struct LinkedList {
 	struct LinkedList* next;
 };
 
+enum MonsterTypes {
+	MONSTER_SLIME,
+	MONSTER_GOBLIN
+	// lapisftw suggested that yakpie should be a monster type
+	// is it a weak monster? or a big boss monster?
+};
+
+struct Monster {
+	int type; // MonsterTypes
+	// Damage dealt
+	// Char representation
+	// Health
+	// Modifier - like Huge or beafly or champion
+	// Iniative / attack speed
+};
+
 struct Room {
 	struct Point position;
 	char type;
+	// List monsters
+	struct Monster monsters[10]; 
+	int number_of_monsters;
+	// List treasures
+	
 };
 
 struct Edge {
@@ -60,12 +81,49 @@ int add_room( struct Graph* dag, struct Point pos, char type ) {
 
 	struct Room room = {
 		.position = pos,
-		.type = type
+		.type = type,
+		.number_of_monsters = 0
 	};
 	dag->nodes[dag->number_of_nodes] = room;
 	dag->number_of_nodes++;
 
 	return ALL_GOOD;
+}
+
+int add_monster_to_room(
+		struct Graph* dag,
+		struct Point pos,
+		char type
+) {
+	
+	for(int i=0; i<dag->number_of_nodes; i++) {
+		struct Room* room = &dag->nodes[i];
+		if(room->position.x == pos.x &&
+			room->position.y == pos.y)
+		{
+			int monster_type;
+			switch(type) {
+				case '1':
+					monster_type = MONSTER_SLIME;
+					break;
+				case '2':
+					monster_type = MONSTER_GOBLIN;
+					break;
+				default:
+					return SOMETHING_BROKE;
+			}
+	
+			struct Monster monster = {
+				.type = monster_type
+			};
+			room->monsters[room->number_of_monsters] = monster;
+			room->number_of_monsters++;
+
+			return ALL_GOOD;
+		}
+	}
+
+	return SOMETHING_BROKE;
 }
 
 int add_edges(

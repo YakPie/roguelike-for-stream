@@ -135,8 +135,21 @@ struct Graph* create_dag_from_dungeonrule(char *output)
 				break;
 		}
 
-		add_room( dag, pos, output[i] );
-		add_edges( dag, prev_pos, pos );
+		switch(output[i]) {
+			case 's':
+				add_room( dag, pos, output[i] );
+				break;
+			case 'e':
+			case 'l':
+			case 'r':
+			case 'f':
+				add_room( dag, pos, output[i] );
+				add_edges( dag, prev_pos, pos );
+				break;
+			case '1':
+			case '2':
+				add_monster_to_room( dag, pos, output[i] );
+		}
 	}
 
 	return dag;

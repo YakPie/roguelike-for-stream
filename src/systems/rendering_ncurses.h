@@ -3,12 +3,20 @@
 
 #include "../components/components.h"
 
-void print_room_ncurses(struct Graph* dag) {
+struct Point get_offset() {
 	int row, col;
 	getmaxyx(stdscr, row, col);
 
-	int offset_y = row - 15;
-	int offset_x = col / 2;
+	struct Point ret = {
+		.x = col / 2,
+		.y = row - 15
+	};
+
+	return ret;
+}
+
+void print_room_ncurses(struct Graph* dag) {
+	struct Point offset = get_offset();
 
 	for(int i=0; i < dag->number_of_nodes; i++) {
 		char room_type = dag->nodes[i].type; 
@@ -27,14 +35,14 @@ void print_room_ncurses(struct Graph* dag) {
 		int x = dag->nodes[i].position.x * 2,
 			 y = dag->nodes[i].position.y * 2;
 
-		mvprintw(y + offset_y, x + offset_x, "%c", room_type);
+		mvprintw(y + offset.y, x + offset.x, "%c", room_type);
 	}
 
 	for(int i=0; i < dag->number_of_edges; i++) {
 		int x = dag->edges[i].from.x + dag->edges[i].to.x,
 			 y = dag->edges[i].from.y + dag->edges[i].to.y;
 
-		mvprintw(y + offset_y, x + offset_x, ".");
+		mvprintw(y + offset.y, x + offset.x, ".");
 	}
 
 	refresh();
