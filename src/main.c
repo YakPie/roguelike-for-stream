@@ -215,7 +215,7 @@ int main(void)
 
 	// Setup ncurses
 	initscr();
-	setlocale(LC_ALL,"C-UTF-8");
+//	setlocale(LC_ALL,"C-UTF-8");
 	noecho();
 
 	int ch;
