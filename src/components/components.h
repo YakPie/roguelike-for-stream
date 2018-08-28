@@ -1,6 +1,7 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
+// TODO: rename this to `Rule`
 struct Rules {
 	char id;
 	char* replace;

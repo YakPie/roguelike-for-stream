@@ -10,6 +10,164 @@
 #include "systems/pcg_dungeon.h"
 #include "systems/rendering_ncurses.h"
 
+// File example:
+//   
+// s => sl
+// s => sr # comment support
+// s => sf
+// l => l1
+//
+enum TokenType {
+	TOKENTYPE_ID,          // ([a-zA-Z0-9])
+	TOKENTYPE_REPLACE,     // ([a-zA-Z0-9]+)
+	TOKENTYPE_ARROW,       // \=\>
+	TOKENTYPE_COMMENT,     // \#.*$
+	TOKENTYPE_NEWLINE,     // \n
+	TOKENTYPE_END_OF_FILE, // EOF
+	TOKENTYPE_UNKNOWN
+};
+
+struct Token {
+	enum TokenType type;
+	char *data;
+};
+
+struct RulesWrapper {
+	struct Rules* rules;
+	int number_of_rules;
+};
+
+struct Token scanner( FILE* fd ) {
+	struct Token tk;
+	tk.type = TOKENTYPE_UNKNOWN;
+	char buffer[100];
+	// TODO: needs to ignore spaces and tabs
+	// (non-newline whitespace characters)
+
+	int ret = fscanf( fd, "%[a-zA-Z0-9]", buffer);
+	if(ret == 1) {
+		tk.type = TOKENTYPE_ID;
+		tk.data = calloc(sizeof(char), 2);
+		tk.data[0] = buffer[0];
+		return tk;
+	}
+	else if(ret > 1) {
+		tk.type = TOKENTYPE_REPLACE;
+		tk.data = calloc(sizeof(char), ret+1);
+		strncpy(tk.data, buffer, ret+1);
+		return tk;
+	}
+	
+	ret = fscanf( fd, "%*[ ]=>");
+	// check if succesfull, return TOKENTYPE_ARROW
+	
+	// need to check for EOF
+	
+	// need to parse comments
+	
+	// need to parse newlines
+//	int c = fgetc( fd );
+	return tk;
+}
+
+// LEVEL => RULE LEVEL
+//			| COMMENT? NEWLINE
+//			| EOF
+//
+// RULE  => ID ARROW REPLACE COMMENT? NEWLINE
+// Rewrite a struct that also have the length of the array
+struct Rules parse_rule(struct Token cur, FILE* fd);
+struct RulesWrapper parse_level(FILE* fd) {	
+	struct Token cur;
+	const int max_rules = 10;
+	struct Rules rules[max_rules];
+	int number_of_rules = 0;
+
+	cur = scanner(fd); 
+	while(cur.type != TOKENTYPE_END_OF_FILE) {
+		switch(cur.type) {
+			case TOKENTYPE_COMMENT:
+				cur = scanner(fd);
+				// Intentionally not breaking
+			case TOKENTYPE_NEWLINE:
+				break;
+
+			default:
+				rules[number_of_rules] = parse_rule(cur, fd);
+				number_of_rules++;
+
+				if(number_of_rules > 10) {
+					fprintf(stderr, "More than 10 rules\n");
+					break;
+				}
+		}
+		cur = scanner(fd); 
+	}
+
+	struct RulesWrapper rw = {
+		.rules = rules,
+		.number_of_rules = number_of_rules
+	};
+	return rw;
+}
+
+struct Token expected_token(struct Token cur, enum TokenType type) {
+	if(cur.type != type) {
+		char *token_str;
+		switch(type) {
+			case TOKENTYPE_ID:
+				token_str = "TOKENTYPE_ID";
+				break;
+			case TOKENTYPE_ARROW:
+				token_str = "TOKENTYPE_ARROW";
+				break;
+			case TOKENTYPE_REPLACE:
+				token_str = "TOKENTYPE_REPLACE";
+				break;
+			case TOKENTYPE_COMMENT:
+				token_str = "TOKENTYPE_COMMENT";
+				break;
+			case TOKENTYPE_NEWLINE:
+				token_str = "TOKENTYPE_NEWLINE";
+				break;
+			case TOKENTYPE_END_OF_FILE:
+				token_str = "TOKENTYPE_END_OF_FILE";
+				break;
+			default:
+				token_str = "UNKNOWN_TOKEN";
+				break;
+		}
+		fprintf(stderr, "Unexpected token, expected %s", token_str);
+		exit(SOMETHING_BROKE);
+	}
+	return cur;
+}
+
+struct Rules parse_rule(struct Token cur, FILE* fd) {
+	struct Rules rule;
+
+	expected_token(cur, TOKENTYPE_ID);
+	rule.id = *cur.data;
+	free(cur.data);
+
+	expected_token(scanner(fd), TOKENTYPE_ARROW);
+	// TODO: accept both REPLACE and ID
+	cur = expected_token(scanner(fd), TOKENTYPE_REPLACE);
+	rule.replace = cur.data;
+
+	cur = scanner(fd);
+	if(cur.type == TOKENTYPE_COMMENT) {
+		cur = scanner(fd);
+	}
+	expected_token(scanner(fd), TOKENTYPE_NEWLINE);
+	
+	return rule;
+}
+
+struct RulesWrapper parser( FILE* fd ) {
+	return parse_level(fd);
+}
+
 int main(void)
 {
 	srand(time(NULL));
@@ -27,7 +185,7 @@ int main(void)
 	 *  0 = reset direction
 	 *  1 = slime
 	 *  2 = goblin
-	 */
+	 *
 	struct Rules rules[] = {
 //		{ .id = 'f',  .replace = "s" },
 		{ .id = 's',  .replace = "sl" },
@@ -45,9 +203,15 @@ int main(void)
 		{ .id = 's',  .replace = "safqfqf" },
 	};
 //	char* starting_rules = "sfpllffpfforrrorrffe";
+	*/
+
+	FILE *fd = fopen("./level1", "r");
+	struct RulesWrapper rw = parser(fd);
+	fclose(fd);
+
 	char* starting_rules = "se";
 	int num_replacements = 10;
-	const int rules_length = sizeof(rules)/sizeof(*rules);
+//	const int rules_length = sizeof(rules)/sizeof(*rules);
 
 	// Setup ncurses
 	initscr();
@@ -77,11 +241,11 @@ int main(void)
 			if(dag != NULL) free(dag);
 
 			output = rule_engine(
-				rules,
+				rw.rules,
 				starting_rules,
 				num_replacements,
-				rules_length
-			); //*/
+				rw.number_of_rules
+			); 
 
 			// Travel the dungeon rule and gennerates a DAG
 			dag = create_dag_from_dungeonrule(output);
