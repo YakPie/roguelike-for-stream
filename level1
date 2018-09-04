@@ -1,7 +1,18 @@
-s=>sl # test
-s=>sr
-# test
-s=>sf
-l=>l1
-l=>l2
+s=>sl
+s => sr
+s => sf
+l => l1
 
+# Description for different types
+# s = start of the level / entry
+# e = end of the level
+# l = moved left and create a room
+# r = move right and create a room
+# f = move upward/forward and create a room
+# p = push rules (pushes the current position to the stack)
+# o = pop rules (pops position of the stack)
+# q = turn clockwise
+# a = turn anti-clockwise
+# 0 = reset direction
+# 1 = slime
+# 2 = goblin

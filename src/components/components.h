@@ -192,6 +192,9 @@ void debugRuleArray(struct Rules* rules, int rules_length)
 	}
 }
 
-
+struct RulesWrapper {
+	struct Rules* rules;
+	int number_of_rules;
+};
 
 #endif
