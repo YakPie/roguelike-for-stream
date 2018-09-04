@@ -30,6 +30,8 @@ enum TokenType {
 struct Token {
 	enum TokenType type;
 	char *data;
+	int line_number;
+	int col;
 };
 
 struct RulesWrapper {
@@ -38,35 +40,60 @@ struct RulesWrapper {
 };
 
 struct Token scanner( FILE* fd ) {
+//	printf("ftell: %ld\n", ftell(fd));
+
 	struct Token tk;
 	tk.type = TOKENTYPE_UNKNOWN;
 	char buffer[100];
-	// TODO: needs to ignore spaces and tabs
-	// (non-newline whitespace characters)
+	
+beginning:
+	switch (fgetc(fd)) {
+		case ' ': goto beginning;
+		case '\t': goto beginning;
+		case '\n': 
+			tk.type = TOKENTYPE_NEWLINE;
+			printf("Returning TOKEN NEWLINE\n");
+			return tk;
+		case EOF:
+			tk.type = TOKENTYPE_END_OF_FILE;
+			printf("Returning TOKEN EOF\n");
+			return tk;
+		default: fseek(fd, -1, SEEK_CUR);
+	}
 
-	int ret = fscanf( fd, "%[a-zA-Z0-9]", buffer);
+	int ret = fscanf( fd, " %[a-zA-Z0-9]", buffer);
+
 	if(ret == 1) {
-		tk.type = TOKENTYPE_ID;
-		tk.data = calloc(sizeof(char), 2);
-		tk.data[0] = buffer[0];
-		return tk;
-	}
-	else if(ret > 1) {
-		tk.type = TOKENTYPE_REPLACE;
-		tk.data = calloc(sizeof(char), ret+1);
-		strncpy(tk.data, buffer, ret+1);
-		return tk;
+		if(strlen(buffer) == 1) {
+			tk.type = TOKENTYPE_ID;
+			tk.data = calloc(sizeof(char), 2);
+			tk.data[0] = buffer[0];
+			printf("Returning TOKEN ID\n");
+			return tk;
+		}
+		else if(strlen(buffer) > 1) {
+			tk.type = TOKENTYPE_REPLACE;
+			tk.data = calloc(sizeof(char), ret+1);
+			strncpy(tk.data, buffer, ret+1);
+			printf("Returning TOKEN REPLACE\n");
+			return tk;
+		}
 	}
 	
-	ret = fscanf( fd, "%*[ ]=>");
-	// check if succesfull, return TOKENTYPE_ARROW
-	
-	// need to check for EOF
+	char *c = calloc(sizeof(char), 3);
+	// todo: need to check the return code of fscanf
+	// bpaf: do you want to remove the line 72 todo and ignore fscanf? I think you can even pass NULL instead of c and avoid alloc
+	ret = fscanf( fd, " %2c", c ); 
+	ret = strcmp("=>", c );
+	free(c);
+	if(ret == 0) {
+		tk.type = TOKENTYPE_ARROW;
+		printf("Returning TOKEN ARROW\n");
+		return tk;
+	}
 	
 	// need to parse comments
 	
-	// need to parse newlines
-//	int c = fgetc( fd );
 	return tk;
 }
 
@@ -80,7 +107,7 @@ struct Rules parse_rule(struct Token cur, FILE* fd);
 struct RulesWrapper parse_level(FILE* fd) {	
 	struct Token cur;
 	const int max_rules = 10;
-	struct Rules rules[max_rules];
+	struct Rules* rules = calloc(sizeof(struct Rules), max_rules);
 	int number_of_rules = 0;
 
 	cur = scanner(fd); 
@@ -111,33 +138,37 @@ struct RulesWrapper parse_level(FILE* fd) {
 	return rw;
 }
 
+char * token_descriptor(enum TokenType type) {
+	switch(type) {
+		case TOKENTYPE_ID:
+			return "TOKENTYPE_ID";
+		case TOKENTYPE_ARROW:
+			return "TOKENTYPE_ARROW";
+		case TOKENTYPE_REPLACE:
+			return "TOKENTYPE_REPLACE";
+		case TOKENTYPE_COMMENT:
+			return "TOKENTYPE_COMMENT";
+		case TOKENTYPE_NEWLINE:
+			return "TOKENTYPE_NEWLINE";
+		case TOKENTYPE_END_OF_FILE:
+			return "TOKENTYPE_END_OF_FILE";
+		case TOKENTYPE_UNKNOWN:
+			return "TOKENTYPE_UNKNOWN";
+	}
+
+	return "UNKNOWN_TOKEN";
+}
+
 struct Token expected_token(struct Token cur, enum TokenType type) {
 	if(cur.type != type) {
-		char *token_str;
-		switch(type) {
-			case TOKENTYPE_ID:
-				token_str = "TOKENTYPE_ID";
-				break;
-			case TOKENTYPE_ARROW:
-				token_str = "TOKENTYPE_ARROW";
-				break;
-			case TOKENTYPE_REPLACE:
-				token_str = "TOKENTYPE_REPLACE";
-				break;
-			case TOKENTYPE_COMMENT:
-				token_str = "TOKENTYPE_COMMENT";
-				break;
-			case TOKENTYPE_NEWLINE:
-				token_str = "TOKENTYPE_NEWLINE";
-				break;
-			case TOKENTYPE_END_OF_FILE:
-				token_str = "TOKENTYPE_END_OF_FILE";
-				break;
-			default:
-				token_str = "UNKNOWN_TOKEN";
-				break;
-		}
-		fprintf(stderr, "Unexpected token, expected %s", token_str);
+		char *got = token_descriptor(cur.type);
+		char *expected = token_descriptor(type);
+		fprintf(
+			stderr,
+			"Unexpected token, got %s but expected %s\n",
+			got,
+			expected
+		);
 		exit(SOMETHING_BROKE);
 	}
 	return cur;
@@ -154,12 +185,6 @@ struct Rules parse_rule(struct Token cur, FILE* fd) {
 	// TODO: accept both REPLACE and ID
 	cur = expected_token(scanner(fd), TOKENTYPE_REPLACE);
 	rule.replace = cur.data;
-
-	cur = scanner(fd);
-	if(cur.type == TOKENTYPE_COMMENT) {
-		cur = scanner(fd);
-	}
-	expected_token(scanner(fd), TOKENTYPE_NEWLINE);
 	
 	return rule;
 }
@@ -236,6 +261,11 @@ int main(void)
 		mvprintw(1, 10, "Dungeon");
 		mvprintw(3, 10, "Debug rule:");
 		
+		mvprintw(5, 40, "id replace\n");
+		for(int i=0; i < rw.number_of_rules; i++) {
+			mvprintw(6+i, 40, "%c  %s\n", rw.rules[i].id, rw.rules[i].replace);
+		}
+
 		if(output == NULL || dag == NULL || ch == KEY_ENTER) {
 			if(output != NULL) free(output);
 			if(dag != NULL) free(dag);

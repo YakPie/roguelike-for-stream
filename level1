@@ -1,7 +1,6 @@
-s => sl
+s=>sl
+s=>sr
+s=>sf
+l=>l1
+l=>l2
 
-# comment
-
-s => sr # comment support
-s => sf
-l => l1
