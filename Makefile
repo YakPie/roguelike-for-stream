@@ -5,7 +5,7 @@ src/main: src/main.c
 	gcc -ggdb -g src/main.c -lncurses -Ibuild -o ./build/main
 
 run: src/main
-	./build/main
+	./build/main level1 
 
 clean:
 	@rm ./build/*
