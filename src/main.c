@@ -54,6 +54,13 @@ beginning:
 			tk.type = TOKENTYPE_NEWLINE;
 			printf("Returning TOKEN NEWLINE\n");
 			return tk;
+		case '#': {
+			int tmp = fgetc(fd);
+			while(tmp != '\n' && tmp != EOF)
+				tmp = fgetc(fd);
+			tk.type = TOKENTYPE_COMMENT;
+			return tk;
+		}
 		case EOF:
 			tk.type = TOKENTYPE_END_OF_FILE;
 			printf("Returning TOKEN EOF\n");
@@ -114,8 +121,6 @@ struct RulesWrapper parse_level(FILE* fd) {
 	while(cur.type != TOKENTYPE_END_OF_FILE) {
 		switch(cur.type) {
 			case TOKENTYPE_COMMENT:
-				cur = scanner(fd);
-				// Intentionally not breaking
 			case TOKENTYPE_NEWLINE:
 				break;
 
