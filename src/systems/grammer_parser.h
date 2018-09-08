@@ -28,8 +28,6 @@ struct Token {
 };
 
 struct Token scanner( FILE* fd ) {
-//	printf("ftell: %ld\n", ftell(fd));
-
 	struct Token tk;
 	tk.type = TOKENTYPE_UNKNOWN;
 	char buffer[100];
@@ -40,7 +38,6 @@ beginning:
 		case '\t': goto beginning;
 		case '\n': 
 			tk.type = TOKENTYPE_NEWLINE;
-			printf("Returning TOKEN NEWLINE\n");
 			return tk;
 		case '#': {
 			int tmp = fgetc(fd);
@@ -51,7 +48,6 @@ beginning:
 		}
 		case EOF:
 			tk.type = TOKENTYPE_END_OF_FILE;
-			printf("Returning TOKEN EOF\n");
 			return tk;
 		default: fseek(fd, -1, SEEK_CUR);
 	}
@@ -63,14 +59,12 @@ beginning:
 			tk.type = TOKENTYPE_ID;
 			tk.data = calloc(sizeof(char), 2);
 			tk.data[0] = buffer[0];
-			printf("Returning TOKEN ID\n");
 			return tk;
 		}
 		else if(strlen(buffer) > 1) {
 			tk.type = TOKENTYPE_REPLACE;
 			tk.data = calloc(sizeof(char), ret+1);
 			strncpy(tk.data, buffer, ret+1);
-			printf("Returning TOKEN REPLACE\n");
 			return tk;
 		}
 	}
@@ -83,11 +77,8 @@ beginning:
 	free(c);
 	if(ret == 0) {
 		tk.type = TOKENTYPE_ARROW;
-		printf("Returning TOKEN ARROW\n");
 		return tk;
 	}
-	
-	// need to parse comments
 	
 	return tk;
 }
