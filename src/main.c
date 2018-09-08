@@ -127,22 +127,86 @@ const int KEY_S = 115;
 const int KEY_M = 109;
 const int KEY_ENTER = 10;
 
+struct Point move_in_direction(
+	struct Point old_pos, enum Direction direction)
+{
+	switch(direction) {
+		case UP: {
+			struct Point pos = {
+				.x = old_pos.x,
+				.y = old_pos.y - 1
+			};
+			return pos;
+		}
+		case DOWN: {
+			struct Point pos = {
+				.x = old_pos.x,
+				.y = old_pos.y + 1
+			};
+			return pos;
+		}
+		case LEFT: {
+			struct Point pos = {
+				.x = old_pos.x - 1,
+				.y = old_pos.y
+			};
+			return pos;
+		}
+		case RIGHT: {
+			struct Point pos = {
+				.x = old_pos.x + 1,
+				.y = old_pos.y
+			};
+			return pos;
+		}
+	}
+
+	return old_pos;
+}
+
+int collision_detection(
+		struct Point current_pos, enum Direction direction) {
+	struct Point new_pos = move_in_direction(
+		current_pos,
+		direction
+	);
+	/* Example query:
+	 * new_pos(x, y),
+	 * position(entity_id, x, y),
+	 * collision(entity_id, true)?
+	 */
+
+	return 0; // No collision found
+}
+
 void position_move(char ch, struct Point* pos) {
 	switch(ch) {
 		case KEY_W: 
 			mvprintw(5, 10, "KEY_UP!");
+			if(collision_detection(*pos, UP))
+				break;
+
 			pos->y--;
 			break;
 		case KEY_S: 
 			mvprintw(5, 10, "KEY_DOWN!");
+			if(collision_detection(*pos, DOWN))
+				break;
+
 			pos->y++;
 			break;
 		case KEY_A: 
 			mvprintw(5, 10, "KEY_LEFT!");
+			if(collision_detection(*pos, LEFT))
+				break;
+
 			pos->x--;
 			break;
 		case KEY_D: 
 			mvprintw(5, 10, "KEY_RIGHT!");
+			if(collision_detection(*pos, RIGHT))
+				break;
+
 			pos->x++;
 			break;
 		default:
