@@ -15,7 +15,7 @@ struct Point get_offset() {
 	return ret;
 }
 
-void print_room_ncurses(struct Graph* dag) {
+void print_room_ncurses(struct Graph* dag, int x, int y) {
 	struct Point offset = get_offset();
 
 	for(int i=0; i < dag->number_of_nodes; i++) {
@@ -45,10 +45,11 @@ void print_room_ncurses(struct Graph* dag) {
 		mvprintw(y + offset.y, x + offset.x, ".");
 	}
 
+	mvprintw(y * 2 + offset.y, x * 2 + offset.x, "@");
 	refresh();
 }
 
-void print_room_info(struct Graph* dag, int x, int y) {
+void print_debug_room_info(struct Graph* dag, int x, int y) {
 	struct Point offset = get_offset();
 
 	for(int i=0; i<dag->number_of_nodes; i++) {
@@ -71,7 +72,6 @@ void print_room_info(struct Graph* dag, int x, int y) {
 		}
 	}
 
-	mvprintw(y * 2 + offset.y, x * 2 + offset.x, "@");
 }
 
 

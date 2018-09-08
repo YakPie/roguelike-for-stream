@@ -45,7 +45,8 @@ void print_door(
 	mvprintw(-y + offset.y, x + offset.x, "D");
 }
 
-void print_current_room_ncurses(struct Graph* dag, int x, int y) {
+void print_current_room_ncurses(struct Graph* dag, int x, int y,
+		struct Point player) {
 	struct Point offset = get_offset();
 
 	int row, col;
@@ -90,6 +91,38 @@ void print_current_room_ncurses(struct Graph* dag, int x, int y) {
 			);
 		}
 	}
+
+	mvprintw(player.y + offset.y, player.x + offset.x, "@");
+}
+
+const int KEY_D = 100;
+const int KEY_W = 119;
+const int KEY_A = 97;
+const int KEY_S = 115;
+const int KEY_M = 109;
+const int KEY_ENTER = 10;
+
+void position_move(char ch, struct Point* pos) {
+	switch(ch) {
+		case KEY_W: 
+			mvprintw(5, 10, "KEY_UP!");
+			pos->y--;
+			break;
+		case KEY_S: 
+			mvprintw(5, 10, "KEY_DOWN!");
+			pos->y++;
+			break;
+		case KEY_A: 
+			mvprintw(5, 10, "KEY_LEFT!");
+			pos->x--;
+			break;
+		case KEY_D: 
+			mvprintw(5, 10, "KEY_RIGHT!");
+			pos->x++;
+			break;
+		default:
+			mvprintw(5, 10, "%d", ch);
+	}
 }
 
 int main(int argc, char **argv)
@@ -124,15 +157,14 @@ int main(int argc, char **argv)
 	char* output = NULL;
 	struct Graph* dag = NULL;
 
-	const int KEY_D = 100;
-	const int KEY_W = 119;
-	const int KEY_A = 97;
-	const int KEY_S = 115;
-	const int KEY_M = 109;
-	const int KEY_ENTER = 10;
-
-	int x = 0,
-		 y = 0;
+	struct Point current_room = {
+		.x = 0,
+		.y = 0
+	};
+	struct Point position_in_room = {
+		.x = 0,
+		.y = 0
+	};
 
 	int tmp = 0;
 	int show_map = 1;
@@ -162,50 +194,50 @@ int main(int argc, char **argv)
 			// Travel the dungeon rule and gennerates a DAG
 			dag = create_dag_from_dungeonrule(output);
 
+			// Finds starting room
 			for(int i=0; i<dag->number_of_nodes; i++) {
 				if(dag->nodes[i].type == 's') {
-					x = dag->nodes[i].position.x;
-					y = dag->nodes[i].position.y;
+					current_room.x = dag->nodes[i].position.x;
+					current_room.y = dag->nodes[i].position.y;
 					break;
 				}
 			}
 		}
-		mvprintw(2, 10, "The current position is x %d and y %d", x, y);
+		mvprintw(
+			2, 10,
+			"The current room is x %d and y %d",
+			current_room.x,
+			current_room.y
+		);
 
 		mvprintw(3, 25, output);
 		if(show_map)
-			print_room_ncurses(dag);
+			print_room_ncurses(dag, current_room.x, current_room.y);
 		else
-			print_current_room_ncurses(dag, x, y);
-		print_room_info(dag, x, y);
+			print_current_room_ncurses(
+				dag,
+				current_room.x, current_room.y,
+				position_in_room
+			);
+
+		print_debug_room_info(dag, current_room.x, current_room.y);
 
 		// Wait on character
 		ch = getch();
 		clear();
 
+		if(show_map) {
+			// move in map
+			position_move(ch, &current_room);
+		} else {
+			// move in room
+			position_move(ch, &position_in_room);
+		}
+
 		switch(ch) {
-			case KEY_W: 
-				mvprintw(5, 10, "KEY_UP!");
-				y--;
-				break;
-			case KEY_S: 
-				mvprintw(5, 10, "KEY_DOWN!");
-				y++;
-				break;
-			case KEY_A: 
-				mvprintw(5, 10, "KEY_LEFT!");
-				x--;
-				break;
-			case KEY_D: 
-				mvprintw(5, 10, "KEY_RIGHT!");
-				x++;
-				break;
 			case KEY_M:
 				show_map = show_map==1 ? 0 : 1;
-			default:
-				mvprintw(5, 10, "%d", ch);
 		}
-		
 	}
 	
 	free(output);
