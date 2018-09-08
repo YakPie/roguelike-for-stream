@@ -11,6 +11,87 @@
 #include "systems/rendering_ncurses.h"
 #include "systems/grammer_parser.h"
 
+void print_door(
+	struct Point current, 
+	struct Point towards,
+	struct Point offset,
+	int room_width,
+	int room_height
+) {
+	int x=0, y=0;
+	// upwards
+	if(towards.y < current.y && towards.x == current.x) {
+		y = room_height;
+		x = room_width / 2;
+	}
+	// downwards
+	else if(towards.y > current.y && towards.x == current.x) {
+		y = 0;
+		x = room_width / 2;
+	}
+	// left
+	else if(towards.y == current.y && towards.x < current.x) {
+		y = room_height / 2;
+		x = 0;
+	}
+	// right
+	else if(towards.y == current.y && towards.x > current.y) {
+		y = room_height / 2;
+		x = room_width;
+	}
+	else
+		return;
+
+	mvprintw(-y + offset.y, x + offset.x, "D");
+}
+
+void print_current_room_ncurses(struct Graph* dag, int x, int y) {
+	struct Point offset = get_offset();
+
+	int row, col;
+	getmaxyx(stdscr, row, col);
+
+	// Print Walls
+	int room_width = col / 2,
+		 room_height = row / 2;
+
+	offset.x -= room_width / 2;
+	offset.y += 5;
+
+	for(int x = 0; x <= room_width; x++) {
+		for(int y = 0; y <= room_height; y++) {
+			if(x == 0 || y == 0 || x == room_width || y == room_height)
+				mvprintw(-y + offset.y, x + offset.x, "W");
+		}
+	}
+
+	for(int i=0; i<dag->number_of_edges; i++) {
+		if(dag->edges[i].from.x == x &&
+			dag->edges[i].from.y == y)
+		{
+			print_door(
+				dag->edges[i].from,
+				dag->edges[i].to,
+				offset,
+				room_width,
+				room_height
+			);
+		}
+
+		if(dag->edges[i].to.x == x &&
+			dag->edges[i].to.y == y)
+		{
+			print_door(
+				dag->edges[i].to,
+				dag->edges[i].from,
+				offset,
+				room_width,
+				room_height
+			);
+		}
+	}
+}
+
 int main(int argc, char **argv)
 {
 	srand(time(NULL));
@@ -47,12 +128,14 @@ int main(int argc, char **argv)
 	const int KEY_W = 119;
 	const int KEY_A = 97;
 	const int KEY_S = 115;
+	const int KEY_M = 109;
 	const int KEY_ENTER = 10;
 
 	int x = 0,
 		 y = 0;
 
 	int tmp = 0;
+	int show_map = 1;
 
 	while(true) {
 		tmp++;
@@ -90,7 +173,10 @@ int main(int argc, char **argv)
 		mvprintw(2, 10, "The current position is x %d and y %d", x, y);
 
 		mvprintw(3, 25, output);
-		print_room_ncurses(dag);
+		if(show_map)
+			print_room_ncurses(dag);
+		else
+			print_current_room_ncurses(dag, x, y);
 		print_room_info(dag, x, y);
 
 		// Wait on character
@@ -114,6 +200,8 @@ int main(int argc, char **argv)
 				mvprintw(5, 10, "KEY_RIGHT!");
 				x++;
 				break;
+			case KEY_M:
+				show_map = show_map==1 ? 0 : 1;
 			default:
 				mvprintw(5, 10, "%d", ch);
 		}

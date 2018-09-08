@@ -9,7 +9,7 @@ struct Point get_offset() {
 
 	struct Point ret = {
 		.x = col / 2,
-		.y = row - 15
+		.y = row - 10
 	};
 
 	return ret;
