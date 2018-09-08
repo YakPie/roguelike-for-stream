@@ -24,14 +24,20 @@ int main(int argc, char **argv)
 	struct RulesWrapper rw = parser(fd);
 	fclose(fd);
 
-//	char* starting_rules = "sfpllffpfforrrorrffe";
 	char* starting_rules = "se";
+	if(argc > 2) {
+		starting_rules = argv[2];	
+	}
+
 	int num_replacements = 10;
+	if(argc > 3) {
+		num_replacements = atoi(argv[3]);
+	}
 
 	// Setup ncurses
 	initscr();
-//	setlocale(LC_ALL,"C-UTF-8");
 	noecho();
+	halfdelay(1);
 
 	int ch;
 	char* output = NULL;
@@ -46,9 +52,12 @@ int main(int argc, char **argv)
 	int x = 0,
 		 y = 0;
 
+	int tmp = 0;
+
 	while(true) {
+		tmp++;
 		// Prints some debug info
-		mvprintw(1, 10, "Dungeon");
+		mvprintw(1, 10, "Dungeon %d", tmp);
 		mvprintw(3, 10, "Debug rule:");
 		
 		mvprintw(5, 40, "id replace\n");
