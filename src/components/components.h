@@ -31,6 +31,7 @@ struct Monster {
 	// Health
 	// Modifier - like Huge or beafly or champion
 	// Iniative / attack speed
+	// Position
 };
 
 struct Room {

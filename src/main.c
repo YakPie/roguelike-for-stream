@@ -95,6 +95,19 @@ void print_current_room_ncurses(struct Graph* dag, int x, int y,
 	mvprintw(player.y + offset.y, player.x + offset.x, "@");
 }
 
+void center_in_room(struct Point* player)
+{
+	int row, col;
+	getmaxyx(stdscr, row, col);
+
+	// Print Walls
+	int room_width = col / 2,
+		 room_height = row / 2;
+
+	player->x = room_width / 2;
+	player->y = -room_height / 2;
+}
+
 const int KEY_D = 100;
 const int KEY_W = 119;
 const int KEY_A = 97;
@@ -199,6 +212,7 @@ int main(int argc, char **argv)
 				if(dag->nodes[i].type == 's') {
 					current_room.x = dag->nodes[i].position.x;
 					current_room.y = dag->nodes[i].position.y;
+					center_in_room(&position_in_room);
 					break;
 				}
 			}
