@@ -32,6 +32,7 @@ struct Monster {
 	// Modifier - like Huge or beafly or champion
 	// Iniative / attack speed
 	// Position
+	struct Point position;
 };
 
 struct Room {

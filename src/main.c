@@ -19,30 +19,42 @@ void print_door(
 	int room_height
 ) {
 	int x=0, y=0;
-	// upwards
-	if(towards.y < current.y && towards.x == current.x) {
-		y = room_height;
-		x = room_width / 2;
-	}
-	// downwards
-	else if(towards.y > current.y && towards.x == current.x) {
-		y = 0;
-		x = room_width / 2;
-	}
-	// left
-	else if(towards.y == current.y && towards.x < current.x) {
-		y = room_height / 2;
-		x = 0;
-	}
-	// right
-	else if(towards.y == current.y && towards.x > current.y) {
-		y = room_height / 2;
-		x = room_width;
-	}
-	else
-		return;
+	if(towards.x == current.x) {
+		// upwards
+		if(towards.y < current.y) {
+			y = room_height;
+			x = room_width / 2;
+		}
+		// downwards
+		else if(towards.y > current.y) {
+			y = 0;
+			x = room_width / 2;
+		}
+		else
+			return;
 
-	mvprintw(-y + offset.y, x + offset.x, "D");
+		mvprintw(-y + offset.y, x + offset.x - 2, "|   |");
+	}
+	else if(towards.y == current.y) {
+		// left
+		if(towards.x < current.x) {
+			y = room_height / 2;
+			x = 0;
+		}
+		// right
+		else if(towards.x > current.y) {
+			y = room_height / 2;
+			x = room_width;
+		}
+		else
+			return;
+
+		mvprintw(-y + offset.y - 2, x + offset.x, "-");
+		mvprintw(-y + offset.y - 1, x + offset.x, " ");
+		mvprintw(-y + offset.y + 0, x + offset.x, " ");
+		mvprintw(-y + offset.y + 1, x + offset.x, " ");
+		mvprintw(-y + offset.y + 2, x + offset.x, "-");
+	}
 }
 
 void print_current_room_ncurses(struct Graph* dag, int x, int y,
@@ -185,12 +197,14 @@ int main(int argc, char **argv)
 	while(true) {
 		tmp++;
 		// Prints some debug info
-		mvprintw(1, 10, "Dungeon %d", tmp);
+		mvprintw(1, 10,
+				"Dungeon (total number of frames printed %d)", tmp);
 		mvprintw(3, 10, "Debug rule:");
 		
 		mvprintw(5, 40, "id replace\n");
 		for(int i=0; i < rw.number_of_rules; i++) {
-			mvprintw(6+i, 40, "%c  %s\n", rw.rules[i].id, rw.rules[i].replace);
+			mvprintw(6+i, 40, "%c  %s\n",
+					rw.rules[i].id, rw.rules[i].replace);
 		}
 
 		if(output == NULL || dag == NULL || ch == KEY_ENTER) {
@@ -236,7 +250,6 @@ int main(int argc, char **argv)
 
 		print_debug_room_info(dag, current_room.x, current_room.y);
 
-		// Wait on character
 		ch = getch();
 		clear();
 
