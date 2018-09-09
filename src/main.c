@@ -7,6 +7,7 @@
 #undef KEY_ENTER
 
 #include "components/components.h"
+#include "components/database.h"
 #include "systems/pcg_dungeon.h"
 #include "systems/rendering_ncurses.h"
 #include "systems/grammer_parser.h"
@@ -170,6 +171,7 @@ int collision_detection(
 		current_pos,
 		direction
 	);
+
 	/* Example query:
 	 * new_pos(x, y),
 	 * position(entity_id, x, y),
