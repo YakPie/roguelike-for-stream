@@ -21,7 +21,17 @@ struct Column
 {
 	char *name;
 	struct Datatype type;
-	// void *data;
+
+	// Only for column oriented layout
+	void *data_begin; 
+	void *data_current;
+	void *data_end;
+};
+
+enum DataLayout
+{
+	DATALAYOUT_ROW_ORIENTED,
+	DATALAYOUT_COLOUMN_ORIENTED
 };
 
 struct Table
@@ -32,9 +42,7 @@ struct Table
 	struct Column columns[255];
 	unsigned int number_of_columns;
 
-	// column oriented tables vs row oriented tables
-
-	// void *data;
+	enum DataLayout datalayout;
 };
 
 struct Tables
@@ -95,7 +103,66 @@ void query(struct Database_Handle dbh, struct Query query)
 	// Query data
 }
 
+
+struct Column* lookup_column(
+	struct Database_Handle dbh, char* table_name, char* column_name)
+{
+	for(int i=0; i<dbh.tables->number_of_tables; i++) {
+		if(strcmp(dbh.tables->tables[i].name, table_name) == 0) {
+			
+			for(
+				int ic=0;
+				ic<dbh.tables->tables[i].number_of_columns;
+				ic++
+			) {
+				if(strcmp(
+						dbh.tables->tables[i].columns[ic].name,
+						column_name
+				) == 0) {
+					
+					return &(dbh.tables->tables[i].columns[ic]);
+
+				}
+			}
+
+		}
+	}
+
+	return NULL;
+}
+
 // INSERT
+struct InsertData
+{
+	char *name;
+	void *data;
+};
+
+void insert_into(
+		struct Database_Handle dbh, char* table_name,
+		int num, ...)
+{
+	va_list arg_list;
+	va_start(arg_list, num);
+	for(int i=0; i<num; i++) {
+		struct InsertData data = va_arg(arg_list, struct InsertData);
+		struct Column* column =
+			lookup_column(dbh, table_name, data.name);	
+
+		assert(column != NULL);
+
+		// TOOD: rellaoc if we don't have enough space
+		assert(
+			column->data_current + column->type.size
+			<= column->data_end
+		);
+
+		memcpy(column->data_current, data.data, column->type.size);
+		column->data_current += column->type.size;
+	}
+	va_end(arg_list);
+}
+
 // DELETE
 // UPDATE
 
@@ -117,13 +184,24 @@ void create_table(
 	};
 
 	dbh.tables->tables[dbh.tables->number_of_tables] = new_table;
+	dbh.tables->tables[dbh.tables->number_of_tables].datalayout =
+		DATALAYOUT_COLOUMN_ORIENTED;
 
 	va_list arg_list;
 	va_start(arg_list, num);
 	for(int i=0; i<num; i++) {
-		dbh.tables
+		struct Column* current_column = &(dbh.tables
 			->tables[dbh.tables->number_of_tables]
-			.columns[i] = va_arg(arg_list, struct Column);
+			.columns[i]);
+
+		*current_column = va_arg(arg_list, struct Column);
+
+		void *data = calloc(current_column->type.size, 255);
+
+		current_column->data_begin = data;
+		current_column->data_current = data;
+		current_column->data_end =
+			data + current_column->type.size * 255;
 	}
 	dbh.tables
 			->tables[dbh.tables->number_of_tables]
