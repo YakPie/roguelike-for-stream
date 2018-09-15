@@ -121,12 +121,12 @@ void center_in_room(struct Point* player)
 	player->y = -room_height / 2;
 }
 
-const int KEY_D = 100;
-const int KEY_W = 119;
-const int KEY_A = 97;
-const int KEY_S = 115;
-const int KEY_M = 109;
-const int KEY_ENTER = 10;
+#define KEY_D 100
+#define KEY_W 119
+#define KEY_A 97
+#define KEY_S 115
+#define KEY_M 109
+#define KEY_ENTER 10
 
 struct Point move_in_direction(
 	struct Point old_pos, enum Direction direction)
@@ -183,28 +183,28 @@ int collision_detection(
 
 void position_move(char ch, struct Point* pos) {
 	switch(ch) {
-		case KEY_W: 
+		case KEY_W:
 			mvprintw(5, 10, "KEY_UP!");
 			if(collision_detection(*pos, UP))
 				break;
 
 			pos->y--;
 			break;
-		case KEY_S: 
+		case KEY_S:
 			mvprintw(5, 10, "KEY_DOWN!");
 			if(collision_detection(*pos, DOWN))
 				break;
 
 			pos->y++;
 			break;
-		case KEY_A: 
+		case KEY_A:
 			mvprintw(5, 10, "KEY_LEFT!");
 			if(collision_detection(*pos, LEFT))
 				break;
 
 			pos->x--;
 			break;
-		case KEY_D: 
+		case KEY_D:
 			mvprintw(5, 10, "KEY_RIGHT!");
 			if(collision_detection(*pos, RIGHT))
 				break;
@@ -231,7 +231,7 @@ int main(int argc, char **argv)
 
 	char* starting_rules = "se";
 	if(argc > 2) {
-		starting_rules = argv[2];	
+		starting_rules = argv[2];
 	}
 
 	int num_replacements = 10;
@@ -266,7 +266,7 @@ int main(int argc, char **argv)
 		mvprintw(1, 10,
 				"Dungeon (total number of frames printed %d)", tmp);
 		mvprintw(3, 10, "Debug rule:");
-		
+
 		mvprintw(5, 40, "id replace\n");
 		for(int i=0; i < rw.number_of_rules; i++) {
 			mvprintw(6+i, 40, "%c  %s\n",
@@ -282,7 +282,7 @@ int main(int argc, char **argv)
 				starting_rules,
 				num_replacements,
 				rw.number_of_rules
-			); 
+			);
 
 			// Travel the dungeon rule and gennerates a DAG
 			dag = create_dag_from_dungeonrule(output);
@@ -332,7 +332,7 @@ int main(int argc, char **argv)
 				show_map = show_map==1 ? 0 : 1;
 		}
 	}
-	
+
 	free(output);
 	free(dag);
 
