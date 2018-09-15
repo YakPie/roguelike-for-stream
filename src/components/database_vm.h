@@ -11,6 +11,9 @@
 // DELETE = not implemented
 // CREATE TABLE = prototype
 
+// Does the VM needs a stack?
+// Do the VM need recursion? Datalog?
+
 enum BYTECODE_OPCODE {
 	OPCODE_UNKNOWN	
 };
