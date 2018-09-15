@@ -1,3 +1,4 @@
+#include "components/database_vm.h"
 #include "components/database.h"
 
 int main()
