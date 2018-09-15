@@ -25,6 +25,11 @@ struct Datatype datatype_char = {
 	.size = sizeof(char)
 };
 
+struct Datatype datatype_string = {
+	.name = "string",
+	.size = sizeof(char)
+};
+
 struct Column
 {
 	char *name;
@@ -136,9 +141,18 @@ void query(struct Database_Handle dbh, struct Query query)
 		printf("Column name '%s'\n", table->columns[i].name);
 		void* it = table->columns[i].data_begin;
 		void* end = table->columns[i].data_current;
+		char* type_name = table->columns[i].type.name;
+
 		while(it < end) {
-			printf("%d\n", *(int *)it);
-			it+= table->columns[i].type.size;
+			if(strcmp(type_name, "integer") == 0) {
+				printf("%d\n", *(int *)it);
+			} else if(strcmp(type_name, "char") == 0) {
+				printf("%c\n", *(char *)it);
+			} else if(strcmp(type_name, "string") == 0) {
+				printf("%s\n", (char *)it);
+			}
+			it+= table->columns[i].type.size *
+				  table->columns[i].count;
 		}
 	}
 }
@@ -197,8 +211,13 @@ void insert_into(
 			<= column->data_end
 		);
 
-		memcpy(column->data_current, data.data, column->type.size);
-		column->data_current += column->type.size;
+		memcpy(
+			column->data_current,
+			data.data,
+			column->type.size * column->count
+		);
+		column->data_current +=
+			column->type.size * column->count;
 	}
 	va_end(arg_list);
 }

@@ -75,5 +75,22 @@ int main()
 	};
 	query(dbh, test_query3);
 
+	struct Column column_string = {
+		.name = "StringStuff",
+		.type = datatype_string,
+		.count = 255
+	};
+	create_table(dbh, "table_with_char", 1, column_string);
+	struct InsertData column_StringStuff = {
+		.name = "StringStuff",
+		.data = "test" 
+	};
+	insert_into(
+			dbh, "table_with_char", 1, column_StringStuff);
+	struct Query test_query4 = {
+		.table_name = "table_with_char"
+	};
+	query(dbh, test_query4);
+
 	return 0;
 }
