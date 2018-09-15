@@ -7,10 +7,6 @@ int main()
 	create_table(dbh, "test", 0);	
 	create_table(dbh, "test2", 0);
 
-	struct Datatype datatype_integer = {
-		.name = "integer",
-		.size = sizeof(int)
-	};
 	struct Column column1 = {
 		.name = "Column1",
 		.type = datatype_integer

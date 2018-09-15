@@ -13,14 +13,25 @@ struct Datatype
 {
 	char *name;
 	size_t size;
-	// TODO: think about alignment
-	// how to print
+};
+
+static struct Datatype datatype_integer = {
+	.name = "integer",
+	.size = sizeof(int),
+	.count = 1
+};
+
+struct Datatype datatype_char = {
+	.name = "char",
+	.size = sizeof(char),
+	.count = 1
 };
 
 struct Column
 {
 	char *name;
 	struct Datatype type;
+	size_t count;
 
 	// Only for column oriented layout
 	void *data_begin; 
