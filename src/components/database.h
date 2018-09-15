@@ -17,14 +17,12 @@ struct Datatype
 
 static struct Datatype datatype_integer = {
 	.name = "integer",
-	.size = sizeof(int),
-	.count = 1
+	.size = sizeof(int)
 };
 
 struct Datatype datatype_char = {
 	.name = "char",
-	.size = sizeof(char),
-	.count = 1
+	.size = sizeof(char)
 };
 
 struct Column

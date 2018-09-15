@@ -9,11 +9,13 @@ int main()
 
 	struct Column column1 = {
 		.name = "Column1",
-		.type = datatype_integer
+		.type = datatype_integer,
+		.count = 1
 	};
 	struct Column column2 = {
 		.name = "Column2",
-		.type = datatype_integer	
+		.type = datatype_integer,
+		.count = 1
 	};
 
 	create_table(
