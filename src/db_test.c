@@ -39,23 +39,43 @@ int main()
 	};
 	query(dbh, test_query2);
 
-	/*
-	// TODO: get insertion working
-	void *column1_data_data = calloc(datatype_integer.size, 1);
-	*column1_data_data = (int)20;
-	void *column2_data_data = calloc(datatype_integer.size, 1);
-	*column2_data_data = (int)20;
-	struct InsertData column1_data = {
-		.name = "Column1",
-		.data = column1_data_data
+	// Inserting data into the database
+	{
+		int column1_data_data = 20;
+		int column2_data_data = 30;
+		struct InsertData column1_data = {
+			.name = "Column1",
+			.data = &column1_data_data
+		};
+		struct InsertData column2_data = {
+			.name = "Column2",
+			.data = &column2_data_data
+		};
+		insert_into(dbh, "table_with_columns", 2,
+				column1_data, column2_data);
+	}
+
+	// Inserting data into the database
+	{
+		int column1_data_data = 50;
+		int column2_data_data = 60;
+		struct InsertData column1_data = {
+			.name = "Column1",
+			.data = &column1_data_data
+		};
+		struct InsertData column2_data = {
+			.name = "Column2",
+			.data = &column2_data_data
+		};
+		insert_into(dbh, "table_with_columns", 2,
+				column1_data, column2_data);
+	}
+
+	// Query data back
+	struct Query test_query3 = {
+		.table_name = "table_with_columns"
 	};
-	struct InsertData column2_data = {
-		.name = "Column2",
-		.data = column2_data_data
-	};
-	insert_into(dbh, "table_with_columns", 2,
-			column1_data, column2_data);
-	*/
+	query(dbh, test_query3);
 
 	return 0;
 }

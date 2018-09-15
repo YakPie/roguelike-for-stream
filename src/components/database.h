@@ -64,6 +64,18 @@ struct Query
 	// filter method (WHERE)
 };
 
+struct Table* lookup_table(
+	struct Database_Handle dbh, char* name) {
+
+	for(int i=0; i<dbh.tables->number_of_tables; i++) {
+		if(strcmp(dbh.tables->tables[i].name, name) == 0) {
+			return &(dbh.tables->tables[i]);
+		}
+	}
+
+	return NULL;
+}
+
 // QUERY / SUBSCRIBE
 void query(struct Database_Handle dbh, struct Query query)
 {
@@ -73,6 +85,7 @@ void query(struct Database_Handle dbh, struct Query query)
 		for(int i=0; i < dbh.tables->number_of_tables; i++) {
 			printf("%s\n", dbh.tables->tables[i].name);
 		}
+		return;
 	}
 
 	if(query.query_schema) {
@@ -97,10 +110,28 @@ void query(struct Database_Handle dbh, struct Query query)
 			break;
 		}
 	}
-
+	return;
 	}
 
-	// Query data
+	struct Table* table = lookup_table(dbh, query.table_name);
+	if(table == NULL) {
+		fprintf(
+			stderr,
+			"Couldn't find table with name %s\n",
+			query.table_name
+		);
+		return; 
+	}
+
+	for(int i=0; i < table->number_of_columns; i++) {
+		printf("Column name '%s'\n", table->columns[i].name);
+		void* it = table->columns[i].data_begin;
+		void* end = table->columns[i].data_current;
+		while(it < end) {
+			printf("%d\n", *(int *)it);
+			it+= table->columns[i].type.size;
+		}
+	}
 }
 
 
