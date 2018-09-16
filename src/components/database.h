@@ -20,6 +20,11 @@ static struct Datatype datatype_integer = {
 	.size = sizeof(int)
 };
 
+static struct Datatype datatype_float = {
+	.name = "float",
+	.size = sizeof(float)
+};
+
 struct Datatype datatype_char = {
 	.name = "char",
 	.size = sizeof(char)
@@ -69,6 +74,9 @@ struct Tables
 struct Database_Handle
 {
 	struct Tables* tables;	
+	// virtual tables
+	// indexes
+	// subscribers
 };
 
 struct Query
@@ -94,6 +102,8 @@ struct Table* lookup_table(
 void print_column(void *it, struct Datatype dt) {
 	if(strcmp(dt.name, "integer") == 0) {
 		printf("%d\t", *(int *)it);
+	} else if(strcmp(dt.name, "float") == 0) {
+		printf("%f\t", *(float *)it);
 	} else if(strcmp(dt.name, "char") == 0) {
 		printf("%c\t", *(char *)it);
 	} else if(strcmp(dt.name, "string") == 0) {

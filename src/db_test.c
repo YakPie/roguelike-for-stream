@@ -1,3 +1,4 @@
+#include "components/database_query.h"
 #include "components/database_vm.h"
 #include "components/database.h"
 
@@ -15,7 +16,7 @@ int main()
 	};
 	struct Column column2 = {
 		.name = "Column2",
-		.type = datatype_integer,
+		.type = datatype_float,
 		.count = 1
 	};
 
@@ -41,7 +42,7 @@ int main()
 	// Inserting data into the database
 	{
 		int column1_data_data = 20;
-		int column2_data_data = 30;
+		float column2_data_data = 1.5;
 		struct InsertData column1_data = {
 			.name = "Column1",
 			.data = &column1_data_data
@@ -57,7 +58,7 @@ int main()
 	// Inserting data into the database
 	{
 		int column1_data_data = 50;
-		int column2_data_data = 60;
+		float column2_data_data = 2.5;
 		struct InsertData column1_data = {
 			.name = "Column1",
 			.data = &column1_data_data

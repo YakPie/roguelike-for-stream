@@ -13,7 +13,7 @@
  *		float hp; // [0,1]
  *  }
  *
- *  Query for healthy entity:
+ *  Query for healthy entity (datalog-like syntax):
  *	 	position(entityId, x, y), health(entityId, >0)?
  *
  *	
@@ -28,5 +28,9 @@
  *       \/
  *  Database result
  */
+
+//struct Token scanner()
+//struct AST* parse(char *)
+//char* compile(struct AST*)
 
 #endif
