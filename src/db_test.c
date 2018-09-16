@@ -71,6 +71,7 @@ int main()
 	}
 
 	// Query data back
+	printf("\n");
 	struct Query test_query3 = {
 		.table_name = "table_with_columns"
 	};
@@ -91,6 +92,7 @@ int main()
 	struct Query test_query4 = {
 		.table_name = "table_with_char"
 	};
+	printf("\n");
 	query(dbh, test_query4);
 
 	return 0;

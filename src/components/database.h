@@ -103,31 +103,6 @@ void query(struct Database_Handle dbh, struct Query query)
 		return;
 	}
 
-	if(query.query_schema) {
-	// Find a table with the same name as in the query
-	for(int i=0; i < dbh.tables->number_of_tables; i++) {
-		if(strcmp(dbh.tables->tables[i].name, query.table_name) == 0) {
-			// Print out all column names
-			printf("column name   datatype name\n");
-			printf("-----------   -------------\n");
-			for(
-				int ic=0;
-				ic < dbh.tables->tables[i].number_of_columns;
-				ic++) {
-				
-				printf(
-					"%s       %s\n",
-					dbh.tables->tables[i].columns[ic].name,
-					dbh.tables->tables[i].columns[ic].type.name
-				);
-
-			}
-			break;
-		}
-	}
-	return;
-	}
-
 	struct Table* table = lookup_table(dbh, query.table_name);
 	if(table == NULL) {
 		fprintf(
@@ -138,27 +113,45 @@ void query(struct Database_Handle dbh, struct Query query)
 		return; 
 	}
 
+	if(query.query_schema) {
+		// Print out all column names
+		printf("column name   datatype name\n");
+		printf("-----------   -------------\n");
+		for(int i=0; i < table->number_of_columns; i++) {
+			printf("%s       %s\n",
+					table->columns[i].name,
+					table->columns[i].type.name
+					);
+
+		}
+	return;
+	}
+
 	for(int i=0; i < table->number_of_columns; i++) {
-		printf("Column name '%s'\n", table->columns[i].name);
+		printf("%s\t", table->columns[i].name);
+	}
+	printf("\n");
 
-	//	struct Iterator* it = create_itereator(
-	//			dbh, table, table->columns[i]);
+	for(size_t it_i = 0; it_i < table->number_of_rows; it_i++) {
+		for(int i=0; i < table->number_of_columns; i++) {
+			//	struct Iterator* it = create_itereator(
+			//			dbh, table, table->columns[i]);
 
-		char* type_name = table->columns[i].type.name;
-		size_t total_size = table->columns[i].type.size *
-				  table->columns[i].count;
+			char* type_name = table->columns[i].type.name;
+			size_t total_size = table->columns[i].type.size *
+				table->columns[i].count;
 
-		for(size_t it_i = 0; it_i < table->number_of_rows; it_i++) {
 			void* it =
 				table->columns[i].data_begin + it_i * total_size;
 			if(strcmp(type_name, "integer") == 0) {
-				printf("%d\n", *(int *)it);
+				printf("%d\t", *(int *)it);
 			} else if(strcmp(type_name, "char") == 0) {
-				printf("%c\n", *(char *)it);
+				printf("%c\t", *(char *)it);
 			} else if(strcmp(type_name, "string") == 0) {
-				printf("%s\n", (char *)it);
+				printf("%s\t", (char *)it);
 			}
 		}
+		printf("\n");
 	}
 }
 
