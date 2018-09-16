@@ -29,8 +29,31 @@
  *  Database result
  */
 
-//struct Token scanner()
-//struct AST* parse(char *)
+// Yakpie's Game Query Language (YGQL)
+
+#include <stdlib.h>
+
+struct YGQL_Token {
+
+};
+
+struct YGQL_AST {
+
+};
+
+struct YGQL_Token scanner(char* query) {
+	struct YGQL_Token token = {
+
+	};
+
+	return token;
+}
+
+struct YGQL_AST* parse(char* query) {
+	struct YGQL_AST* ast = calloc(sizeof(struct YGQL_AST), 1);
+	return ast;
+}
+
 //char* compile(struct AST*)
 
 #endif
