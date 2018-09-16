@@ -91,6 +91,23 @@ struct Table* lookup_table(
 	return NULL;
 }
 
+void print_column(void *it, struct Datatype dt) {
+	if(strcmp(dt.name, "integer") == 0) {
+		printf("%d\t", *(int *)it);
+	} else if(strcmp(dt.name, "char") == 0) {
+		printf("%c\t", *(char *)it);
+	} else if(strcmp(dt.name, "string") == 0) {
+		printf("%s\t", (char *)it);
+	}
+}
+
+void* get_ptr_column(struct Table* table, size_t row, size_t i)
+{
+	return table->columns[i].data_begin
+		  + row * table->columns[i].type.size *
+		  table->columns[i].count;
+}
+
 // QUERY / SUBSCRIBE
 void query(struct Database_Handle dbh, struct Query query)
 {
@@ -124,32 +141,22 @@ void query(struct Database_Handle dbh, struct Query query)
 					);
 
 		}
-	return;
+		return;
 	}
 
+	// Printing out column headers
 	for(int i=0; i < table->number_of_columns; i++) {
 		printf("%s\t", table->columns[i].name);
 	}
 	printf("\n");
 
-	for(size_t it_i = 0; it_i < table->number_of_rows; it_i++) {
+	// Printing out data
+	for(size_t row = 0; row < table->number_of_rows; row++) {
 		for(int i=0; i < table->number_of_columns; i++) {
-			//	struct Iterator* it = create_itereator(
-			//			dbh, table, table->columns[i]);
-
-			char* type_name = table->columns[i].type.name;
-			size_t total_size = table->columns[i].type.size *
-				table->columns[i].count;
-
-			void* it =
-				table->columns[i].data_begin + it_i * total_size;
-			if(strcmp(type_name, "integer") == 0) {
-				printf("%d\t", *(int *)it);
-			} else if(strcmp(type_name, "char") == 0) {
-				printf("%c\t", *(char *)it);
-			} else if(strcmp(type_name, "string") == 0) {
-				printf("%s\t", (char *)it);
-			}
+			print_column(
+				get_ptr_column(table, row, i),
+				table->columns[i].type
+			);
 		}
 		printf("\n");
 	}
