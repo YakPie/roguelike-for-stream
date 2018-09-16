@@ -14,11 +14,14 @@ The game is currently dependent on `ncurses`.
 To build:
 
 ```
+mkdir build
+cd build
+cmake ..
 make
 ```
 
 To run:
 
 ```
-make run
+./main ../level1
 ```
