@@ -38,8 +38,6 @@ struct Column
 
 	// Only for column oriented layout
 	void *data_begin; 
-	void *data_current;
-	void *data_end;
 };
 
 enum DataLayout
@@ -54,7 +52,10 @@ struct Table
 
 	// TODO: rename to schema?
 	struct Column columns[255];
-	unsigned int number_of_columns;
+	size_t number_of_columns;
+
+	size_t number_of_rows;
+	size_t rows_allocated; // Total space allocated
 
 	enum DataLayout datalayout;
 };
@@ -139,11 +140,17 @@ void query(struct Database_Handle dbh, struct Query query)
 
 	for(int i=0; i < table->number_of_columns; i++) {
 		printf("Column name '%s'\n", table->columns[i].name);
-		void* it = table->columns[i].data_begin;
-		void* end = table->columns[i].data_current;
-		char* type_name = table->columns[i].type.name;
 
-		while(it < end) {
+	//	struct Iterator* it = create_itereator(
+	//			dbh, table, table->columns[i]);
+
+		char* type_name = table->columns[i].type.name;
+		size_t total_size = table->columns[i].type.size *
+				  table->columns[i].count;
+
+		for(size_t it_i = 0; it_i < table->number_of_rows; it_i++) {
+			void* it =
+				table->columns[i].data_begin + it_i * total_size;
 			if(strcmp(type_name, "integer") == 0) {
 				printf("%d\n", *(int *)it);
 			} else if(strcmp(type_name, "char") == 0) {
@@ -151,8 +158,6 @@ void query(struct Database_Handle dbh, struct Query query)
 			} else if(strcmp(type_name, "string") == 0) {
 				printf("%s\n", (char *)it);
 			}
-			it+= table->columns[i].type.size *
-				  table->columns[i].count;
 		}
 	}
 }
@@ -198,27 +203,26 @@ void insert_into(
 {
 	va_list arg_list;
 	va_start(arg_list, num);
+	struct Table* table = lookup_table(dbh, table_name);
 	for(int i=0; i<num; i++) {
 		struct InsertData data = va_arg(arg_list, struct InsertData);
 		struct Column* column =
 			lookup_column(dbh, table_name, data.name);	
 
 		assert(column != NULL);
+		size_t column_size = column->type.size * column->count;
 
 		// TOOD: rellaoc if we don't have enough space
 		assert(
-			column->data_current + column->type.size
-			<= column->data_end
+			table->number_of_rows < table->rows_allocated
 		);
 
-		memcpy(
-			column->data_current,
-			data.data,
-			column->type.size * column->count
-		);
-		column->data_current +=
-			column->type.size * column->count;
+		void* data_current =
+			column->data_begin + column_size * table->number_of_rows;
+		memcpy(data_current, data.data, column_size);
 	}
+
+	table->number_of_rows++;
 	va_end(arg_list);
 }
 
@@ -239,12 +243,13 @@ void create_table(
 	assert(dbh.tables->number_of_tables < 255);
 
 	struct Table new_table = {
-		.name = name
+		.name = name,
+		.number_of_rows = 0,
+		.rows_allocated = 255,
+		.datalayout = DATALAYOUT_ROW_ORIENTED
 	};
 
 	dbh.tables->tables[dbh.tables->number_of_tables] = new_table;
-	dbh.tables->tables[dbh.tables->number_of_tables].datalayout =
-		DATALAYOUT_COLOUMN_ORIENTED;
 
 	va_list arg_list;
 	va_start(arg_list, num);
@@ -258,9 +263,6 @@ void create_table(
 		void *data = calloc(current_column->type.size, 255);
 
 		current_column->data_begin = data;
-		current_column->data_current = data;
-		current_column->data_end =
-			data + current_column->type.size * 255;
 	}
 	dbh.tables
 			->tables[dbh.tables->number_of_tables]
