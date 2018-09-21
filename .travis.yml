@@ -4,4 +4,13 @@ compiler:
   - clang
   - gcc
 
-script: make
+addons:
+  apt:
+    packages:
+      - cmake
+      - gcc
+
+script:
+  - mkdir build && cd build
+  - cmake ..
+  - make
