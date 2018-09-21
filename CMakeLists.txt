@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 3.3)
 project(YakPie_s_Roguelike)
 
+set(CMAKE_C_FLAGS "-std=c11 -Wall")
 find_package("Curses" REQUIRED)
 
 set(SRC

@@ -49,8 +49,6 @@ void print_room_ncurses(struct Graph* dag, int x, int y) {
 }
 
 void print_debug_room_info(struct Graph* dag, int x, int y) {
-	struct Point offset = get_offset();
-
 	for(int i=0; i<dag->number_of_nodes; i++) {
 		if(dag->nodes[i].position.x == x &&
 			dag->nodes[i].position.y == y)

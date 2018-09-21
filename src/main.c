@@ -167,12 +167,13 @@ struct Point move_in_direction(
 
 int collision_detection(
 		struct Point current_pos, enum Direction direction) {
+	/*
 	struct Point new_pos = move_in_direction(
 		current_pos,
 		direction
 	);
 
-	/* Example query:
+	* Example query:
 	 * new_pos(x, y),
 	 * position(entity_id, x, y),
 	 * collision(entity_id, true)?
