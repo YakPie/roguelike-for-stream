@@ -237,5 +237,5 @@ void create_table(struct Database_Handle dbh, char* name, int num, ...)
 	va_end(args);
 
 	// Update virtual table
-	insert_into();
+	//insert_into();
 }
