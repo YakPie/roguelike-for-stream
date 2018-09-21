@@ -167,19 +167,8 @@ void insert_into(
 // DELETE
 // UPDATE
 
-struct Database_Handle new_database()
+void create_table_impl(struct Tables* tables, char* name, int num, va_list args)
 {
-	struct Database_Handle dbh = {};
-	dbh.tables = calloc(sizeof(struct Tables), 1); 
-	return dbh;
-}
-
-void create_table(
-		struct Database_Handle dbh, char* name, int num, ...)
-{
-	assert(dbh.tables != NULL);
-	assert(dbh.tables->number_of_tables < 255);
-
 	struct Table new_table = {
 		.name = name,
 		.number_of_rows = 0,
@@ -187,25 +176,66 @@ void create_table(
 		.datalayout = DATALAYOUT_ROW_ORIENTED
 	};
 
-	dbh.tables->tables[dbh.tables->number_of_tables] = new_table;
+	tables->tables[tables->number_of_tables] = new_table;
 
-	va_list arg_list;
-	va_start(arg_list, num);
 	for(int i=0; i<num; i++) {
-		struct Column* current_column = &(dbh.tables
-			->tables[dbh.tables->number_of_tables]
+		struct Column* current_column = &(tables
+			->tables[tables->number_of_tables]
 			.columns[i]);
 
-		*current_column = va_arg(arg_list, struct Column);
+		*current_column = va_arg(args, struct Column);
 
 		void *data = calloc(current_column->type.size, 255);
 
 		current_column->data_begin = data;
 	}
-	dbh.tables
-			->tables[dbh.tables->number_of_tables]
-			.number_of_columns = num;
-	va_end(arg_list);
 
-	dbh.tables->number_of_tables++;
+	tables->tables[tables->number_of_tables]
+			.number_of_columns = num;
+
+	tables->number_of_tables++;
+}
+
+void create_virtual_table(struct Database_Handle dbh, char* name, int num, ...)
+{
+	assert(dbh.tables != NULL);
+	assert(dbh.tables->number_of_tables < 255);
+
+	va_list args;
+	va_start(args, num);
+	create_table_impl(dbh.virtual_tables, name, num, args);
+	va_end(args);
+}
+
+struct Database_Handle new_database()
+{
+	struct Database_Handle dbh = {};
+	dbh.tables         = calloc(sizeof(struct Tables), 1); 
+	dbh.virtual_tables = calloc(sizeof(struct Tables), 1); 
+
+	// setup for the virtual table for holding table information
+	{
+		struct Column name = {
+			.name = "name",
+			.type = datatype_string,
+			.count = 255
+		};
+		create_virtual_table(dbh, "tables", 1, name);	
+	}
+
+	return dbh;
+}
+
+void create_table(struct Database_Handle dbh, char* name, int num, ...)
+{
+	assert(dbh.tables != NULL);
+	assert(dbh.tables->number_of_tables < 255);
+
+	va_list args;
+	va_start(args, num);
+	create_table_impl(dbh.tables, name, num, args);
+	va_end(args);
+
+	// Update virtual table
+	insert_into();
 }

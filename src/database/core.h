@@ -74,9 +74,9 @@ struct Tables
 struct Database_Handle
 {
 	struct Tables* tables;	
-	// virtual tables
-	// indexes
-	// subscribers
+	struct Tables* virtual_tables;
+	// TODO: indexes
+	// TODO: subscribers
 };
 
 struct Query
