@@ -108,6 +108,7 @@ void* get_ptr_column(struct Table* table, size_t row, size_t i);
 
 // QUERY / SUBSCRIBE
 void print_column_headers(struct Iterator it);
+void print_column_data(struct Iterator it);
 struct Iterator query(struct Database_Handle dbh, struct Query query);
 enum IterateStatus iterate(struct Iterator* it);
 

@@ -44,6 +44,16 @@ void print_column_headers(struct Iterator it) {
 	printf("\n");
 }
 
+void print_column_data(struct Iterator it)
+{
+	for(int i=0; i < it.table->number_of_columns; i++) {
+		print_column(
+				get_ptr_column(it.table, it.row, i),
+				it.table->columns[i].type
+				);
+	}
+	printf("\n");
+}
 
 // QUERY / SUBSCRIBE
 struct Iterator query(struct Database_Handle dbh, struct Query query)
@@ -85,23 +95,6 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 		return it;
 	}
 
-	// Printing out column headers
-	print_column_headers(it);
-
-	// Printing out data
-	enum IterateStatus it_status = ITERATE_OK;
-	while(it_status != ITERATE_END)
-	{
-		for(int i=0; i < it.table->number_of_columns; i++) {
-			print_column(
-				get_ptr_column(it.table, it.row, i),
-				it.table->columns[i].type
-			);
-		}
-		printf("\n");
-		it_status = iterate(&it);
-	}
-
 	return it;
 }
 
@@ -114,7 +107,6 @@ enum IterateStatus iterate(struct Iterator* it)
 
 	return ITERATE_END;
 }
-
 
 struct Column* lookup_column(
 	struct Database_Handle dbh, char* table_name, char* column_name)

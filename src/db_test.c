@@ -76,7 +76,18 @@ int main()
 	struct Query test_query3 = {
 		.table_name = "table_with_columns"
 	};
-	query(dbh, test_query3);
+	struct Iterator it = query(dbh, test_query3);
+
+	// Printing out column headers
+	print_column_headers(it);
+
+	// Printing out data
+	enum IterateStatus it_status = ITERATE_OK;
+	while(it_status != ITERATE_END)
+	{
+		print_column_data(it);
+		it_status = iterate(&it);
+	}
 
 	struct Column column_string = {
 		.name = "StringStuff",
@@ -94,7 +105,20 @@ int main()
 		.table_name = "table_with_char"
 	};
 	printf("\n");
-	query(dbh, test_query4);
+	it = query(dbh, test_query4);
+
+	// Printing out column headers
+	print_column_headers(it);
+
+	// Printing out data
+	{
+		enum IterateStatus it_status = ITERATE_OK;
+		while(it_status != ITERATE_END)
+		{
+			print_column_data(it);
+			it_status = iterate(&it);
+		}
+	}
 
 	return 0;
 }
