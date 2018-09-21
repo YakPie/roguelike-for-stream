@@ -37,58 +37,82 @@ void* get_ptr_column(struct Table* table, size_t row, size_t i)
 		  table->columns[i].count;
 }
 
+void print_column_headers(struct Iterator it) {
+	for(int i=0; i < it.table->number_of_columns; i++) {
+		printf("%s\t", it.table->columns[i].name);
+	}
+	printf("\n");
+}
+
+
 // QUERY / SUBSCRIBE
-void query(struct Database_Handle dbh, struct Query query)
+struct Iterator query(struct Database_Handle dbh, struct Query query)
 {
+	struct Iterator it = {
+		.row = 0
+	};
+
 	if(strcmp(query.table_name, "tables") == 0) {
 		printf("tables names\n");
 		printf("------------\n");
 		for(int i=0; i < dbh.tables->number_of_tables; i++) {
 			printf("%s\n", dbh.tables->tables[i].name);
 		}
-		return;
+		return it;
 	}
 
-	struct Table* table = lookup_table(dbh, query.table_name);
-	if(table == NULL) {
+	it.table = lookup_table(dbh, query.table_name);
+	if(it.table == NULL) {
 		fprintf(
 			stderr,
 			"Couldn't find table with name %s\n",
 			query.table_name
 		);
-		return; 
+		return it; 
 	}
 
 	if(query.query_schema) {
 		// Print out all column names
 		printf("column name   datatype name\n");
 		printf("-----------   -------------\n");
-		for(int i=0; i < table->number_of_columns; i++) {
+		for(int i=0; i < it.table->number_of_columns; i++) {
 			printf("%s       %s\n",
-					table->columns[i].name,
-					table->columns[i].type.name
+					it.table->columns[i].name,
+					it.table->columns[i].type.name
 					);
 
 		}
-		return;
+		return it;
 	}
 
 	// Printing out column headers
-	for(int i=0; i < table->number_of_columns; i++) {
-		printf("%s\t", table->columns[i].name);
-	}
-	printf("\n");
+	print_column_headers(it);
 
 	// Printing out data
-	for(size_t row = 0; row < table->number_of_rows; row++) {
-		for(int i=0; i < table->number_of_columns; i++) {
+	enum IterateStatus it_status = ITERATE_OK;
+	while(it_status != ITERATE_END)
+	{
+		for(int i=0; i < it.table->number_of_columns; i++) {
 			print_column(
-				get_ptr_column(table, row, i),
-				table->columns[i].type
+				get_ptr_column(it.table, it.row, i),
+				it.table->columns[i].type
 			);
 		}
 		printf("\n");
+		it_status = iterate(&it);
 	}
+
+	return it;
+}
+
+enum IterateStatus iterate(struct Iterator* it)
+{
+	if(it->row + 1 < it->table->number_of_rows) {
+		it->row++;
+		return ITERATE_OK;
+	}
+
+	return ITERATE_END;
 }
 
 

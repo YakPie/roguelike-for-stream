@@ -87,6 +87,18 @@ struct Query
 	// filter method (WHERE)
 };
 
+struct Iterator
+{
+	size_t row;
+	struct Table* table;
+};
+
+enum IterateStatus
+{
+	ITERATE_OK,
+	ITERATE_END
+};
+
 struct Table* lookup_table(
 	struct Database_Handle dbh, char* name);
 
@@ -95,7 +107,9 @@ void print_column(void *it, struct Datatype dt);
 void* get_ptr_column(struct Table* table, size_t row, size_t i);
 
 // QUERY / SUBSCRIBE
-void query(struct Database_Handle dbh, struct Query query);
+void print_column_headers(struct Iterator it);
+struct Iterator query(struct Database_Handle dbh, struct Query query);
+enum IterateStatus iterate(struct Iterator* it);
 
 struct Column* lookup_column(
 	struct Database_Handle dbh, char* table_name, char* column_name);
