@@ -7,7 +7,6 @@
 #undef KEY_ENTER
 
 #include "components/components.h"
-#include "components/database.h"
 #include "systems/pcg_dungeon.h"
 #include "systems/rendering_ncurses.h"
 #include "systems/grammer_parser.h"

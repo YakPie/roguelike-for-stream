@@ -1,6 +1,6 @@
-#include "components/database_query.h"
-#include "components/database_vm.h"
-#include "components/database.h"
+#include "database/query.h"
+#include "database/vm.h"
+#include "database/core.h"
 
 int main()
 {

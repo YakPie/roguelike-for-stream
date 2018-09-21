@@ -7,6 +7,12 @@ find_package("Curses" REQUIRED)
 set(SRC
 	src/components/components.c
 	src/components/components.h
+	src/database/core.h
+	src/database/core.c
+	src/database/query.c
+	src/database/query.h
+	src/database/vm.h
+	src/database/vm.c
 	src/systems/grammer_parser.c
 	src/systems/grammer_parser.h
 	src/systems/pcg_dungeon.h
