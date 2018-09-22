@@ -20,6 +20,11 @@ static struct Datatype datatype_integer = {
 	.size = sizeof(int)
 };
 
+static struct Datatype datatype_uint = {
+	.name = "uint",
+	.size = sizeof(unsigned int)
+};
+
 static struct Datatype datatype_float = {
 	.name = "float",
 	.size = sizeof(float)

@@ -12,7 +12,7 @@ int main()
 
 	struct Column column1 = {
 		.name = "Column1",
-		.type = datatype_integer,
+		.type = datatype_uint,
 		.count = 1
 	};
 	struct Column column2 = {
