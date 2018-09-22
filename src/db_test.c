@@ -82,12 +82,11 @@ int main()
 	print_column_headers(it);
 
 	// Printing out data
-	enum IterateStatus it_status = ITERATE_OK;
-	while(it_status != ITERATE_END)
+	do
 	{
 		print_column_data(it);
-		it_status = iterate(&it);
 	}
+	while(iterate(&it) != ITERATE_END);
 
 	struct Column column_string = {
 		.name = "StringStuff",
@@ -112,12 +111,11 @@ int main()
 
 	// Printing out data
 	{
-		enum IterateStatus it_status = ITERATE_OK;
-		while(it_status != ITERATE_END)
+		do
 		{
 			print_column_data(it);
-			it_status = iterate(&it);
 		}
+		while(iterate(&it) != ITERATE_END);
 	}
 
 	return 0;
