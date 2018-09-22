@@ -104,9 +104,7 @@ enum IterateStatus
 	ITERATE_END
 };
 
-struct Table* lookup_table(
-	struct Database_Handle dbh, char* name);
-
+struct Table* lookup_table(struct Database_Handle dbh, char* name);
 
 void* get_ptr_column(struct Table* table, size_t row, size_t i);
 
@@ -114,8 +112,7 @@ void* get_ptr_column(struct Table* table, size_t row, size_t i);
 struct Iterator query(struct Database_Handle dbh, struct Query query);
 enum IterateStatus iterate(struct Iterator* it);
 
-struct Column* lookup_column(
-	struct Database_Handle dbh, char* table_name, char* column_name);
+struct Column* lookup_column(struct Database_Handle dbh, char* table_name, char* column_name);
 
 // INSERT
 struct InsertData
@@ -124,15 +121,13 @@ struct InsertData
 	void *data;
 };
 
-void insert_into(
-		struct Database_Handle dbh, char* table_name,
-		int num, ...);
+void insert_into(struct Database_Handle dbh, char* table_name, int num, ...);
 
 // DELETE
 // UPDATE
 
 struct Database_Handle new_database();
-void create_table(
-	struct Database_Handle dbh, char* name, int num, ...);
+void create_table(struct Database_Handle dbh, char* name, int num, ...);
+void destory_table(struct Database_Handle dbh, char* name);
 
 #endif

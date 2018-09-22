@@ -32,6 +32,8 @@ int main()
 	};
 	query(dbh, test_query);
 
+	destory_table(dbh, "test2");
+
 	printf("\n");
 
 	struct Query test_query2 = {

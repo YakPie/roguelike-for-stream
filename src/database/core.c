@@ -209,3 +209,12 @@ void create_table(struct Database_Handle dbh, char* name, int num, ...)
 	// Update virtual table
 	//insert_into();
 }
+
+void destory_table(struct Database_Handle dbh, char* name)
+{
+	for(size_t i_t=0; i_t<dbh.tables->number_of_tables; i_t++) {
+		if(strcmp(dbh.tables->tables[i_t].name, name) == 0) {
+			// TODO (#34): Create a method for destorying a table 
+		}
+	}
+}
