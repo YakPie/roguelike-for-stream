@@ -7,6 +7,8 @@
 #undef KEY_ENTER
 
 #include "components/components.h"
+#include "database/core.h"
+#include "systems/systems.h"
 #include "systems/pcg_dungeon.h"
 #include "systems/rendering_ncurses.h"
 #include "systems/grammer_parser.h"
@@ -239,6 +241,12 @@ int main(int argc, char **argv)
 		num_replacements = atoi(argv[3]);
 	}
 
+	// Initialize database
+	struct Database_Handle dbh = new_database();
+
+	// Initialize systems
+	systems_init(dbh);	
+
 	// Setup ncurses
 	initscr();
 	noecho();
@@ -259,8 +267,9 @@ int main(int argc, char **argv)
 
 	int tmp = 0;
 	int show_map = 1;
-
 	while(true) {
+		systems_update(dbh);
+
 		tmp++;
 		// Prints some debug info
 		mvprintw(1, 10,
@@ -337,6 +346,8 @@ int main(int argc, char **argv)
 	free(dag);
 
 	endwin();
+
+	systems_cleanup(dbh);
 
 	return 0;
 }

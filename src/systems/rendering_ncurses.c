@@ -2,6 +2,11 @@
 #include "rendering_ncurses.h"
 #include <ncurses.h>
 
+void rendering_ncurses_update(struct Database_Handle dbh)
+{
+	
+}
+
 struct Point get_offset() {
 	int row, col;
 	getmaxyx(stdscr, row, col);

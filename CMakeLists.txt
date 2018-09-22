@@ -22,12 +22,16 @@ set(SRC
 	src/systems/pcg_dungeon.c
 	src/systems/rendering_ncurses.c
 	src/systems/rendering_ncurses.h
+	src/systems/systems.h
+	src/systems/systems.c
+	src/systems/dummy_system.h
+	src/systems/dummy_system.c
 	)
 
 add_executable(main src/main.c ${SRC})
-add_executable(dbtest src/db_test.c ${SRC})
-add_executable(dbquerytest src/db_query_test.c ${SRC})
+#add_executable(dbtest src/db_test.c ${SRC})
+#add_executable(dbquerytest src/db_query_test.c ${SRC})
 
 target_link_libraries(main ${CURSES_LIBRARY})
-target_link_libraries(dbtest ${CURSES_LIBRARY})
-target_link_libraries(dbquerytest ${CURSES_LIBRARY})
+#target_link_libraries(dbtest ${CURSES_LIBRARY})
+#target_link_libraries(dbquerytest ${CURSES_LIBRARY})

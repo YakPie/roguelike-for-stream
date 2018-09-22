@@ -2,6 +2,9 @@
 #define RENDERING_NCURSES_H 
 
 #include "../components/components.h"
+#include "systems.h"
+
+void rendering_ncurses_update(struct Database_Handle dbh);
 
 struct Point get_offset();
 

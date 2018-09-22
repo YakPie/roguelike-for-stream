@@ -1,0 +1,21 @@
+#ifndef SYSTEMS_H
+#define SYSTEMS_H
+
+#include "../database/core.h"
+
+//typedef void (*subsystem_init)(struct Database_Handle dbh);
+typedef void (*subsystem_update)(struct Database_Handle dbh);
+//typedef void (*subsystem_unload)(struct Database_Handle dbh);
+//typedef void (*subsystem_cleanup)(struct Database_Handle dbh);
+
+static struct Datatype datatype_update_ptr = {
+	.name = "update_ptr",
+	.size = sizeof(subsystem_update)
+};
+
+void systems_init(struct Database_Handle dbh);
+void systems_update(struct Database_Handle dbh);
+void systems_unload(struct Database_Handle dbh);
+void systems_cleanup(struct Database_Handle dbh);
+
+#endif
