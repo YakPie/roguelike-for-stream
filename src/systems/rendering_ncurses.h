@@ -6,6 +6,7 @@
 
 void rendering_ncurses_init(struct Database_Handle dbh);
 void rendering_ncurses_update(struct Database_Handle dbh);
+void rendering_ncurses_cleanup(struct Database_Handle dbh);
 
 struct Point get_offset();
 

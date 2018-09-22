@@ -14,6 +14,11 @@ void rendering_ncurses_update(struct Database_Handle dbh)
 	
 }
 
+void rendering_ncurses_cleanup(struct Database_Handle dbh)
+{
+	endwin();
+}
+
 struct Point get_offset() {
 	int row, col;
 	getmaxyx(stdscr, row, col);

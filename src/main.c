@@ -128,6 +128,7 @@ void center_in_room(struct Point* player)
 #define KEY_S 115
 #define KEY_M 109
 #define KEY_ENTER 10
+#define KEY_ESC 27
 
 struct Point move_in_direction(
 	struct Point old_pos, enum Direction direction)
@@ -245,7 +246,7 @@ int main(int argc, char **argv)
 	struct Database_Handle dbh = new_database();
 
 	// Initialize systems
-	systems_init(dbh);	
+	systems_init(dbh);
 
 	// Setup ncurses
 	int ch;
@@ -263,7 +264,8 @@ int main(int argc, char **argv)
 
 	int tmp = 0;
 	int show_map = 1;
-	while(true) {
+	int is_running = true;
+	while(is_running) {
 		systems_update(dbh);
 
 		tmp++;
@@ -335,15 +337,17 @@ int main(int argc, char **argv)
 		switch(ch) {
 			case KEY_M:
 				show_map = show_map==1 ? 0 : 1;
+				break;
+			case KEY_ESC:
+				is_running = false;
 		}
 	}
 
 	free(output);
 	free(dag);
 
-	endwin();
-
 	systems_cleanup(dbh);
+	printf("End game\n");
 
 	return 0;
 }

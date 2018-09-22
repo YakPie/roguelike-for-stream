@@ -5,8 +5,8 @@
 
 typedef void (*subsystem_init)(struct Database_Handle dbh);
 typedef void (*subsystem_update)(struct Database_Handle dbh);
-//typedef void (*subsystem_unload)(struct Database_Handle dbh);
-//typedef void (*subsystem_cleanup)(struct Database_Handle dbh);
+typedef void (*subsystem_unload)(struct Database_Handle dbh);
+typedef void (*subsystem_cleanup)(struct Database_Handle dbh);
 
 static void subsystem_empty_func(struct Database_Handle dbh) {}
 
@@ -18,6 +18,11 @@ static struct Datatype datatype_init_ptr = {
 static struct Datatype datatype_update_ptr = {
 	.name = "update_ptr",
 	.size = sizeof(subsystem_update)
+};
+
+static struct Datatype datatype_cleanup_ptr = {
+	.name = "cleanup_ptr",
+	.size = sizeof(subsystem_cleanup)
 };
 
 void systems_init(struct Database_Handle dbh);
