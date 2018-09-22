@@ -13,6 +13,8 @@ set(SRC
 	src/database/query.h
 	src/database/vm.h
 	src/database/vm.c
+	src/database/repl.c
+	src/database/repl.h
 	src/systems/grammer_parser.c
 	src/systems/grammer_parser.h
 	src/systems/pcg_dungeon.h

@@ -1,6 +1,7 @@
 #include "database/query.h"
 #include "database/vm.h"
 #include "database/core.h"
+#include "database/repl.h"
 
 int main()
 {
