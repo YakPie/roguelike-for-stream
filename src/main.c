@@ -248,10 +248,6 @@ int main(int argc, char **argv)
 	systems_init(dbh);	
 
 	// Setup ncurses
-	initscr();
-	noecho();
-	halfdelay(1);
-
 	int ch;
 	char* output = NULL;
 	struct Graph* dag = NULL;

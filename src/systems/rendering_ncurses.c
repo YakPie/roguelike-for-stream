@@ -2,6 +2,13 @@
 #include "rendering_ncurses.h"
 #include <ncurses.h>
 
+void rendering_ncurses_init(struct Database_Handle dbh)
+{
+	initscr();
+	noecho();
+	halfdelay(1);
+}
+
 void rendering_ncurses_update(struct Database_Handle dbh)
 {
 	
