@@ -5,6 +5,7 @@ set(CMAKE_C_FLAGS "-std=c11 -Wall")
 find_package("Curses" REQUIRED)
 
 set(SRC
+	src/entity/entity.h
 	src/components/components.c
 	src/components/components.h
 	src/database/core.h
