@@ -14,6 +14,7 @@
  *  }
  *
  *  Query for healthy entity (datalog-like syntax):
+ *
  *	 	position(entityId, x, y), health(entityId, >0)?
  *
  *	
@@ -41,21 +42,28 @@
 // 	delete position(10, 5, 15).
 enum YGQL_TokenType {
 	YGQL_TOKENTYPE_NAME,           // [a-zA-Z][a-zA-Z0-9_]*
-	YGQL_TOKENTYPE_OPEN_PARENT,    // (
-	YGQL_TOKENTYPE_CLOSE_PARENT,   // )
-	YGQL_TOKENTYPE_SEPERATOR,      // ,
-	YGQL_TOKENTYPE_QUESTIONMARK,   // ?
-	YGQL_TOKENTYPE_ENDSTATEMENT,   // .
+//	YGQL_TOKENTYPE_OPEN_PARENT,    // (
+//	YGQL_TOKENTYPE_CLOSE_PARENT,   // )
+//	YGQL_TOKENTYPE_SEPERATOR,      // ,
+//	YGQL_TOKENTYPE_QUESTIONMARK,   // ?
+//	YGQL_TOKENTYPE_ENDSTATEMENT,   // .
 //	YGQL_TOKENTYPE_DELETE,         // delete
 	YGQL_TOKENTYPE_UNKOWN,         // 
 };
 
 struct YGQL_Token {
 	enum YGQL_TokenType type;
+	char *data;
+//	int line_number;
+//	int col;
+};
+
+struct YGQL_AST_Node_Name {
+	char *name;
 };
 
 struct YGQL_AST {
-
+	struct YGQL_AST_Node_Name name;	
 };
 
 struct YGQL_Token ygql_scanner(char* query);
