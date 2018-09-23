@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.3)
 project(YakPie_s_Roguelike)
 
-set(CMAKE_C_FLAGS "-std=c11 -Wall")
+set(CMAKE_C_FLAGS "-std=c11 -Wall -Wno-unused-function")
 find_package("Curses" REQUIRED)
 
 set(SRC
@@ -31,9 +31,9 @@ set(SRC
 	)
 
 add_executable(main src/main.c ${SRC})
-#add_executable(dbtest src/db_test.c ${SRC})
-#add_executable(dbquerytest src/db_query_test.c ${SRC})
+add_executable(dbtest src/db_test.c ${SRC})
+add_executable(dbquerytest src/db_query_test.c ${SRC})
 
 target_link_libraries(main ${CURSES_LIBRARY})
-#target_link_libraries(dbtest ${CURSES_LIBRARY})
-#target_link_libraries(dbquerytest ${CURSES_LIBRARY})
+target_link_libraries(dbtest ${CURSES_LIBRARY})
+target_link_libraries(dbquerytest ${CURSES_LIBRARY})

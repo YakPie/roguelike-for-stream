@@ -107,7 +107,10 @@ struct InsertData
 	void *data;
 };
 
+struct Table* lookup_table_impl(struct Tables* tables, char* name);
 struct Table* lookup_table(struct Database_Handle dbh, char* name);
+struct Table* lookup_virtual_table(struct Database_Handle dbh, char* name);
+struct Column* lookup_column_impl(struct Table* table, char* column_name);
 struct Column* lookup_column(struct Database_Handle dbh, char* table_name, char* column_name);
 void* get_ptr_column(struct Table* table, size_t row, size_t i);
 void destory_table(struct Database_Handle dbh, char* name);

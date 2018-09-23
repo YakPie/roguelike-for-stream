@@ -27,10 +27,19 @@ int main()
 		2, column1, column2
 	);
 
-	struct Query test_query = {
-		.table_name = "tables"
-	};
-	query(dbh, test_query);
+	{
+		struct Query test_query = {
+			.table_name = "tables"
+		};
+		struct Iterator it = query(dbh, test_query);
+
+		print_column_headers(it);
+		do
+		{
+			print_column_data(it);
+		}
+		while(iterate(&it) != ITERATE_END);
+	}
 
 	destory_table(dbh, "test2");
 
@@ -81,10 +90,7 @@ int main()
 	};
 	struct Iterator it = query(dbh, test_query3);
 
-	// Printing out column headers
 	print_column_headers(it);
-
-	// Printing out data
 	do
 	{
 		print_column_data(it);

@@ -5,16 +5,23 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-struct Table* lookup_table(
-	struct Database_Handle dbh, char* name) {
-
-	for(int i=0; i<dbh.tables->number_of_tables; i++) {
-		if(strcmp(dbh.tables->tables[i].name, name) == 0) {
-			return &(dbh.tables->tables[i]);
+struct Table* lookup_table_impl(struct Tables* tables, char* name)
+{
+	for(int i=0; i<tables->number_of_tables; i++) {
+		if(strcmp(tables->tables[i].name, name) == 0) {
+			return &(tables->tables[i]);
 		}
 	}
 
 	return NULL;
+}
+
+struct Table* lookup_table(struct Database_Handle dbh, char* name) {
+	return lookup_table_impl(dbh.tables, name);
+}
+
+struct Table* lookup_virtual_table(struct Database_Handle dbh, char* name) {
+	return lookup_table_impl(dbh.virtual_tables, name);
 }
 
 void* get_ptr_column(struct Table* table, size_t row, size_t i)
@@ -24,31 +31,23 @@ void* get_ptr_column(struct Table* table, size_t row, size_t i)
 		  table->columns[i].count;
 }
 
-struct Column* lookup_column(
-	struct Database_Handle dbh, char* table_name, char* column_name)
+struct Column* lookup_column_impl(struct Table* table, char* column_name)
 {
-	for(int i=0; i<dbh.tables->number_of_tables; i++) {
-		if(strcmp(dbh.tables->tables[i].name, table_name) == 0) {
-			
-			for(
-				int ic=0;
-				ic<dbh.tables->tables[i].number_of_columns;
-				ic++
-			) {
-				if(strcmp(
-						dbh.tables->tables[i].columns[ic].name,
-						column_name
-				) == 0) {
-					
-					return &(dbh.tables->tables[i].columns[ic]);
-
-				}
-			}
-
+	for(int i=0; i< table->number_of_columns; i++) {
+		if(strcmp(table->columns[i].name, column_name) == 0) {
+			return &(table->columns[i]);
 		}
 	}
 
 	return NULL;
+}
+
+struct Column* lookup_column(struct Database_Handle dbh, char* table_name, char* column_name)
+{
+	return lookup_column_impl(
+		lookup_table(dbh, table_name),
+		column_name
+	);
 }
 
 void create_table_impl(struct Tables* tables, char* name, int num, va_list args)

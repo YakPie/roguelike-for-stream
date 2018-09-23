@@ -12,23 +12,18 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 		.row = 0
 	};
 
-	if(strcmp(query.table_name, "tables") == 0) {
-		printf("tables names\n");
-		printf("------------\n");
-		for(int i=0; i < dbh.tables->number_of_tables; i++) {
-			printf("%s\n", dbh.tables->tables[i].name);
-		}
-		return it;
-	}
-
-	it.table = lookup_table(dbh, query.table_name);
+	it.table = lookup_virtual_table(dbh, query.table_name);		
 	if(it.table == NULL) {
-		fprintf(
-			stderr,
-			"Couldn't find table with name %s\n",
-			query.table_name
-		);
-		return it; 
+
+		it.table = lookup_table(dbh, query.table_name);
+		if(it.table == NULL) {
+			fprintf(
+				stderr,
+				"Couldn't find table with name %s\n",
+				query.table_name
+			);
+			return it; 
+		}
 	}
 
 	if(query.query_schema) {
@@ -58,34 +53,44 @@ enum IterateStatus iterate(struct Iterator* it)
 	return ITERATE_END;
 }
 
-void insert_into(
-		struct Database_Handle dbh, char* table_name,
-		int num, ...)
+void insert_into_impl(struct Tables* tables, char* table_name,int num, va_list args)
 {
-	va_list arg_list;
-	va_start(arg_list, num);
-	struct Table* table = lookup_table(dbh, table_name);
+	struct Table* table = lookup_table_impl(tables, table_name);
 	for(int i=0; i<num; i++) {
-		struct InsertData data = va_arg(arg_list, struct InsertData);
-		struct Column* column =
-			lookup_column(dbh, table_name, data.name);	
+		struct InsertData data = va_arg(args, struct InsertData);
+		struct Column* column = lookup_column_impl(table, data.name);	
 
 		assert(column != NULL);
 		size_t column_size = column->type.size * column->count;
 
-		// TOOD: rellaoc if we don't have enough space
+		// TODO: rellaoc if we don't have enough space
 		assert(
 			table->number_of_rows < table->rows_allocated
 		);
 
-		void* data_current =
-			column->data_begin + column_size * table->number_of_rows;
+		void* data_current = column->data_begin + column_size * table->number_of_rows;
 		memcpy(data_current, data.data, column_size);
 	}
 
 	table->number_of_rows++;
+}
+
+void insert_into(struct Database_Handle dbh, char* table_name, int num, ...)
+{
+	va_list arg_list;
+	va_start(arg_list, num);
+	insert_into_impl(dbh.tables, table_name, num, arg_list);
 	va_end(arg_list);
 }
+
+void insert_into_virtual_table(struct Database_Handle dbh, char* table_name, int num, ...)
+{
+	va_list arg_list;
+	va_start(arg_list, num);
+	insert_into_impl(dbh.virtual_tables, table_name, num, arg_list);
+	va_end(arg_list);
+}
+
 
 struct Database_Handle new_database()
 {
@@ -117,6 +122,12 @@ void create_table(struct Database_Handle dbh, char* name, int num, ...)
 	va_end(args);
 
 	// Update virtual table
-	//insert_into();
+	{
+		struct InsertData name_data = {
+			.name = "name",
+			.data = name
+		};
+		insert_into_virtual_table(dbh, "tables", 1, name_data);
+	}
 }
 
