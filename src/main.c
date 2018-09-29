@@ -8,6 +8,7 @@
 
 #include "components/components.h"
 #include "database/core.h"
+#include "database/repl.h"
 #include "systems/systems.h"
 #include "systems/pcg_dungeon.h"
 #include "systems/rendering_ncurses.h"
@@ -127,6 +128,7 @@ void center_in_room(struct Point* player)
 #define KEY_A 97
 #define KEY_S 115
 #define KEY_M 109
+#define KEY_R 114
 #define KEY_ENTER 10
 #define KEY_ESC 27
 
@@ -219,6 +221,14 @@ void position_move(char ch, struct Point* pos) {
 	}
 }
 
+enum GameState
+{
+	GAMESTATE_END,
+	GAMESTATE_MAP,
+	GAMESTATE_ROOM,
+	GAMESTATE_REPL
+};
+
 int main(int argc, char **argv)
 {
 	srand(time(NULL));
@@ -263,9 +273,8 @@ int main(int argc, char **argv)
 	};
 
 	int tmp = 0;
-	int show_map = 1;
-	int is_running = true;
-	while(is_running) {
+	int gamestate = GAMESTATE_MAP;
+	while(gamestate != GAMESTATE_END) {
 		systems_update(dbh);
 
 		tmp++;
@@ -312,34 +321,53 @@ int main(int argc, char **argv)
 		);
 
 		mvprintw(3, 25, output);
-		if(show_map)
-			print_room_ncurses(dag, current_room.x, current_room.y);
-		else
-			print_current_room_ncurses(
-				dag,
-				current_room.x, current_room.y,
-				position_in_room
-			);
-
+		switch(gamestate)
+		{
+			case GAMESTATE_MAP:
+				print_room_ncurses(dag, current_room.x, current_room.y);
+				break;
+			case GAMESTATE_ROOM:
+				print_current_room_ncurses(
+					dag,
+					current_room.x, current_room.y,
+					position_in_room
+				);
+				break;
+			case GAMESTATE_REPL:
+				refresh();
+				def_prog_mode();   // Save ncurses setting
+				endwin();          // Quit ncurses mode
+				setvbuf(stdout, NULL, _IOLBF, 0);
+				while(repl(dbh));
+				reset_prog_mode(); // Get back to ncurses
+				refresh();
+				gamestate = GAMESTATE_MAP;
+				break;
+		}
+			
 		print_debug_room_info(dag, current_room.x, current_room.y);
 
 		ch = getch();
 		clear();
 
-		if(show_map) {
+		if(gamestate == GAMESTATE_MAP) {
 			// move in map
 			position_move(ch, &current_room);
-		} else {
+		} else if(gamestate == GAMESTATE_ROOM) {
 			// move in room
 			position_move(ch, &position_in_room);
 		}
 
 		switch(ch) {
 			case KEY_M:
-				show_map = show_map==1 ? 0 : 1;
+				gamestate = gamestate == GAMESTATE_MAP ? GAMESTATE_ROOM : GAMESTATE_MAP;
 				break;
 			case KEY_ESC:
-				is_running = false;
+				gamestate = GAMESTATE_END;
+				break;
+			case KEY_R:
+				gamestate = GAMESTATE_REPL;
+				break;
 		}
 	}
 
