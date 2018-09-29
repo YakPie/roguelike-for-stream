@@ -92,6 +92,7 @@ struct Query
 struct Iterator
 {
 	size_t row;
+	int found_table;
 	struct Table* table;
 };
 

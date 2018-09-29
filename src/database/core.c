@@ -9,7 +9,8 @@
 struct Iterator query(struct Database_Handle dbh, struct Query query)
 {
 	struct Iterator it = {
-		.row = 0
+		.row = 0,
+		.found_table = 0
 	};
 
 	it.table = lookup_virtual_table(dbh, query.table_name);		
@@ -26,20 +27,7 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 		}
 	}
 
-	if(query.query_schema) {
-		// Print out all column names
-		printf("column name   datatype name\n");
-		printf("-----------   -------------\n");
-		for(int i=0; i < it.table->number_of_columns; i++) {
-			printf("%s       %s\n",
-					it.table->columns[i].name,
-					it.table->columns[i].type.name
-					);
-
-		}
-		return it;
-	}
-
+	it.found_table = 1;
 	return it;
 }
 

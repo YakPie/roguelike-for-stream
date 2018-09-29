@@ -27,29 +27,8 @@ int main()
 		2, column1, column2
 	);
 
-	{
-		struct Query test_query = {
-			.table_name = "tables"
-		};
-		struct Iterator it = query(dbh, test_query);
-
-		print_column_headers(it);
-		do
-		{
-			print_column_data(it);
-		}
-		while(iterate(&it) != ITERATE_END);
-	}
-
-	destory_table(dbh, "test2");
 
 	printf("\n");
-
-	struct Query test_query2 = {
-		.table_name = "table_with_columns",
-		.query_schema = 1
-	};
-	query(dbh, test_query2);
 
 	// Inserting data into the database
 	{
@@ -109,6 +88,7 @@ int main()
 	};
 	insert_into(
 			dbh, "table_with_char", 1, column_StringStuff);
+	/*
 	struct Query test_query4 = {
 		.table_name = "table_with_char"
 	};
@@ -125,7 +105,25 @@ int main()
 			print_column_data(it);
 		}
 		while(iterate(&it) != ITERATE_END);
+	} //*/
+
+	printf("\n query(\"tables\"); \n");
+
+	{
+		struct Query test_query = {
+			.table_name = "tables"
+		};
+		struct Iterator it = query(dbh, test_query);
+
+		print_column_headers(it);
+		do
+		{
+			print_column_data(it);
+		}
+		while(iterate(&it) != ITERATE_END);
 	}
+
+	while(repl(dbh));
 
 	return 0;
 }

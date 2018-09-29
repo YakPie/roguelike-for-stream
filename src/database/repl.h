@@ -7,4 +7,6 @@ void print_column(void *it, struct Datatype dt);
 void print_column_headers(struct Iterator it);
 void print_column_data(struct Iterator it);
 
+int repl(struct Database_Handle dbh);
+
 #endif
