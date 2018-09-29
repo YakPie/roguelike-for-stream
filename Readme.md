@@ -11,9 +11,10 @@ A traditional ASCII based Roguelike that you can play in the terminal. The catch
 
 ## Build & Run
 
+### Linux & MacOS
 The game is currently dependent on `ncurses`.
 
-To build:
+To build (on Linux and Mac):
 
 ```
 mkdir build
@@ -25,5 +26,10 @@ make
 To run:
 
 ```
-./main ../level1
+./main ../assets/level1
 ```
+
+### Windows
+
+You need `PDCurses`, building on Windows is untested.
+Check issue #62.
