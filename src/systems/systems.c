@@ -2,6 +2,34 @@
 #include "../database/repl.h"
 #include "dummy_system.h"
 #include "rendering_ncurses.h"
+#include "frame_counter.h"
+
+void register_subsystem(
+		struct Database_Handle dbh,
+		char *name,
+		subsystem_init init_ptr,
+		subsystem_update update_ptr,
+		subsystem_cleanup cleanup_ptr
+		)
+{
+	struct InsertData name_data = {
+		.name = "name",
+		.data = name
+	};
+	struct InsertData init_ptr_data = {
+		.name = "init_ptr",
+		.data = &init_ptr
+	};
+	struct InsertData update_ptr_data = {
+		.name = "update_ptr",
+		.data = &update_ptr
+	};
+	struct InsertData cleanup_ptr_data = {
+		.name = "cleanup_ptr",
+		.data = &cleanup_ptr
+	};
+	insert_into(dbh, "subsystems", 4, name_data, init_ptr_data, update_ptr_data, cleanup_ptr_data);
+}
 
 void systems_init(struct Database_Handle dbh)
 {
@@ -31,53 +59,28 @@ void systems_init(struct Database_Handle dbh)
 	}
 
 	// For each subsystem add them to the database table
-	// Insert dummy system
-	{
-		struct InsertData name_data = {
-			.name = "name",
-			.data = "dummy system"
-		};
-		subsystem_init init_ptr = &subsystem_empty_func;
-		struct InsertData init_ptr_data = {
-			.name = "init_ptr",
-			.data = &init_ptr
-		};
-		subsystem_update dummy_system_update_ptr = &subsystem_dummy_system_update;	
-		struct InsertData update_ptr_data = {
-			.name = "update_ptr",
-			.data = &dummy_system_update_ptr
-		};
-		subsystem_cleanup cleanup_ptr = &subsystem_empty_func;
-		struct InsertData cleanup_ptr_data = {
-			.name = "cleanup_ptr",
-			.data = &cleanup_ptr
-		};
-		insert_into(dbh, "subsystems", 4, name_data, init_ptr_data, update_ptr_data, cleanup_ptr_data);
-	}
-	// Insert rendering ncurses system
-	{
-		struct InsertData name_data = {
-			.name = "name",
-			.data = "rendering ncurses"
-		};
-		subsystem_init init_ptr = &rendering_ncurses_init;
-		struct InsertData init_ptr_data = {
-			.name = "init_ptr",
-			.data = &init_ptr
-		};
-		subsystem_update update_ptr = &rendering_ncurses_update;	
-		struct InsertData update_ptr_data = {
-			.name = "update_ptr",
-			.data = &update_ptr
-		};
-		subsystem_cleanup cleanup_ptr = &rendering_ncurses_cleanup;
-		struct InsertData cleanup_ptr_data = {
-			.name = "cleanup_ptr",
-			.data = &cleanup_ptr
-		};
-		insert_into(dbh, "subsystems", 4, name_data, init_ptr_data, update_ptr_data, cleanup_ptr_data);
-	}
-
+	register_subsystem(
+		dbh,
+		"dummy system",
+		&subsystem_empty_func,
+		&subsystem_dummy_system_update,
+		&subsystem_empty_func
+	);
+	register_subsystem(
+		dbh,
+		"rendering_ncurses",
+		&rendering_ncurses_init,
+		&rendering_ncurses_update,
+		&rendering_ncurses_cleanup
+	);
+	register_subsystem(
+		dbh,
+		"frame_counter",
+		&subsystem_empty_func,
+		&subsystem_frame_counter_update,
+		&subsystem_empty_func
+	);
+	
 	// Call init on sub_systems?
 	{
 		struct Query query_subsystems = {

@@ -25,6 +25,14 @@ static struct Datatype datatype_cleanup_ptr = {
 	.size = sizeof(subsystem_cleanup)
 };
 
+void register_subsystem(
+		struct Database_Handle dbh,
+		char *name,
+		subsystem_init init_ptr,
+		subsystem_update update_ptr,
+		subsystem_cleanup cleanup_ptr
+		);
+
 void systems_init(struct Database_Handle dbh);
 void systems_update(struct Database_Handle dbh);
 void systems_unload(struct Database_Handle dbh);

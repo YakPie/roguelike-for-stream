@@ -272,15 +272,11 @@ int main(int argc, char **argv)
 		.y = 0
 	};
 
-	int tmp = 0;
 	int gamestate = GAMESTATE_MAP;
 	while(gamestate != GAMESTATE_END) {
 		systems_update(dbh);
 
-		tmp++;
 		// Prints some debug info
-		mvprintw(1, 10,
-				"Dungeon (total number of frames printed %d)", tmp);
 		mvprintw(3, 10, "Debug rule:");
 
 		mvprintw(5, 40, "id replace\n");

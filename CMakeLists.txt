@@ -28,6 +28,8 @@ set(SRC
 	src/systems/systems.c
 	src/systems/dummy_system.h
 	src/systems/dummy_system.c
+	src/systems/frame_counter.h
+	src/systems/frame_counter.c
 	)
 
 add_executable(main src/main.c ${SRC})
