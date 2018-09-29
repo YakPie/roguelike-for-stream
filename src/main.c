@@ -337,8 +337,11 @@ int main(int argc, char **argv)
 				refresh();
 				def_prog_mode();   // Save ncurses setting
 				endwin();          // Quit ncurses mode
-				setvbuf(stdout, NULL, _IOLBF, 0);
+				setvbuf(stdout, NULL, _IOLBF, 0); // Reset stdout
+
+				// Enter REPL
 				while(repl(dbh));
+
 				reset_prog_mode(); // Get back to ncurses
 				refresh();
 				gamestate = GAMESTATE_MAP;
