@@ -4,7 +4,7 @@ project(YakPie_s_Roguelike)
 set(CMAKE_C_FLAGS "-std=c11 -Wall -Wno-unused-function")
 find_package("Curses" REQUIRED)
 
-set(SRC
+add_library(game
 	src/entity/entity.h
 	src/components/components.c
 	src/components/components.h
@@ -18,6 +18,8 @@ set(SRC
 	src/database/repl.h
 	src/database/internal.h
 	src/database/internal.c
+)
+add_library(systems
 	src/systems/grammer_parser.c
 	src/systems/grammer_parser.h
 	src/systems/pcg_dungeon.h
@@ -32,10 +34,10 @@ set(SRC
 	src/systems/frame_counter.c
 	)
 
-add_executable(main src/main.c ${SRC})
-add_executable(dbtest src/db_test.c ${SRC})
-add_executable(dbquerytest src/db_query_test.c ${SRC})
+add_executable(main src/main.c)
+add_executable(dbtest src/db_test.c)
+add_executable(dbquerytest src/db_query_test.c)
 
-target_link_libraries(main ${CURSES_LIBRARY})
-target_link_libraries(dbtest ${CURSES_LIBRARY})
-target_link_libraries(dbquerytest ${CURSES_LIBRARY})
+target_link_libraries(main ${CURSES_LIBRARY} game systems)
+target_link_libraries(dbtest ${CURSES_LIBRARY} game systems)
+target_link_libraries(dbquerytest ${CURSES_LIBRARY} game systems)
