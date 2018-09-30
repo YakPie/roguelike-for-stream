@@ -32,8 +32,6 @@ add_library(game
 	src/database/repl.h
 	src/database/internal.h
 	src/database/internal.c
-)
-add_library(systems
 	src/systems/grammer_parser.c
 	src/systems/grammer_parser.h
 	src/systems/pcg_dungeon.h
@@ -52,6 +50,6 @@ add_executable(main src/main.c)
 add_executable(dbtest src/db_test.c)
 add_executable(dbquerytest src/db_query_test.c)
 
-target_link_libraries(main ${CURSES_LIBRARY} game systems)
-target_link_libraries(dbtest ${CURSES_LIBRARY} game systems)
-target_link_libraries(dbquerytest ${CURSES_LIBRARY} game systems)
+target_link_libraries(main ${CURSES_LIBRARY} game)
+target_link_libraries(dbtest ${CURSES_LIBRARY} game)
+target_link_libraries(dbquerytest ${CURSES_LIBRARY} game)
