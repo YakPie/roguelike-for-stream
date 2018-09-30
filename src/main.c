@@ -123,14 +123,16 @@ void center_in_room(struct Point* player)
 	player->y = -room_height / 2;
 }
 
-#define KEY_D 100
-#define KEY_W 119
-#define KEY_A 97
-#define KEY_S 115
-#define KEY_M 109
-#define KEY_R 114
-#define KEY_ENTER 10
-#define KEY_ESC 27
+enum NCURSES_KEYS {
+	KEY_D = 100,
+	KEY_W = 119,
+	KEY_A = 97,
+	KEY_S = 115,
+	KEY_M = 109,
+	KEY_R = 114,
+	KEY_ENTER = 10,
+	KEY_ESC   = 27
+};
 
 struct Point move_in_direction(
 	struct Point old_pos, enum Direction direction)
