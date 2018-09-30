@@ -276,15 +276,6 @@ int main(int argc, char **argv)
 	while(gamestate != GAMESTATE_END) {
 		systems_update(dbh);
 
-		// Prints some debug info
-		mvprintw(3, 10, "Debug rule:");
-
-		mvprintw(5, 40, "id replace\n");
-		for(int i=0; i < rw.number_of_rules; i++) {
-			mvprintw(6+i, 40, "%c  %s\n",
-					rw.rules[i].id, rw.rules[i].replace);
-		}
-
 		if(output == NULL || dag == NULL || ch == KEY_ENTER) {
 			if(output != NULL) free(output);
 			if(dag != NULL) free(dag);
@@ -309,14 +300,7 @@ int main(int argc, char **argv)
 				}
 			}
 		}
-		mvprintw(
-			2, 10,
-			"The current room is x %d and y %d",
-			current_room.x,
-			current_room.y
-		);
 
-		mvprintw(3, 25, output);
 		switch(gamestate)
 		{
 			case GAMESTATE_MAP:
@@ -343,8 +327,6 @@ int main(int argc, char **argv)
 				gamestate = GAMESTATE_MAP;
 				break;
 		}
-			
-		print_debug_room_info(dag, current_room.x, current_room.y);
 
 		ch = getch();
 		clear();
