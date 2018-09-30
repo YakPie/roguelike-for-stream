@@ -1,7 +1,21 @@
 cmake_minimum_required (VERSION 3.3)
 project(YakPie_s_Roguelike)
 
-set(CMAKE_C_FLAGS "-std=c11 -Wall -Wextra -Wpedantic -Wno-unused-function -Wno-unused-parameter")
+set(CMAKE_C_FLAGS
+	"-std=c11 \
+	-Wall \
+	-Wextra \
+	-Wpedantic \
+	-Wno-unused-function \
+	-Wno-unused-parameter"
+	# TODO: test out these warnings and fix them
+	#-Wconversion \
+	#-Wcast-align \
+	#-Wcast-qual \
+	#-Wpointer-arith \
+	#-Wshadow \
+)
+
 find_package("Curses" REQUIRED)
 
 add_library(game
