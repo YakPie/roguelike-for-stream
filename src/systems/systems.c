@@ -31,6 +31,11 @@ void register_subsystem(
 	insert_into(dbh, "subsystems", 4, name_data, init_ptr_data, update_ptr_data, cleanup_ptr_data);
 }
 
+void register_subsystem_s(struct Database_Handle dbh, struct subsystem s )
+{
+	register_subsystem(dbh, s.name, s.init_ptr, s.update_ptr, s.cleanup_ptr);
+}
+
 void systems_init(struct Database_Handle dbh)
 {
 	// Create a database table for sub systems
@@ -59,27 +64,9 @@ void systems_init(struct Database_Handle dbh)
 	}
 
 	// For each subsystem add them to the database table
-	register_subsystem(
-		dbh,
-		"dummy system",
-		&subsystem_empty_func,
-		&subsystem_dummy_system_update,
-		&subsystem_empty_func
-	);
-	register_subsystem(
-		dbh,
-		"rendering_ncurses",
-		&rendering_ncurses_init,
-		&rendering_ncurses_update,
-		&rendering_ncurses_cleanup
-	);
-	register_subsystem(
-		dbh,
-		"frame_counter",
-		&subsystem_empty_func,
-		&subsystem_frame_counter_update,
-		&subsystem_empty_func
-	);
+	register_subsystem_s(dbh, dummy_system);
+	register_subsystem_s(dbh, rendering_ncurses);
+	register_subsystem_s(dbh, frame_counter);
 	
 	// Call init on sub_systems?
 	{
