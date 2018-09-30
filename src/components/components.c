@@ -94,35 +94,3 @@ int add_edges(
 	return ALL_GOOD;
 }
 
-struct Point pop(struct LinkedList* root) {
-	struct LinkedList* current = root;
-	struct LinkedList* past = root;
-	while(current->next != NULL) {
-		past = current;
-		current = current->next;
-	}
-
-	struct Point ret = current->point;
-	free(current);
-	past->next = NULL;
-
-	return ret;
-}
-
-void push(struct LinkedList* root, struct Point point) {
-	struct LinkedList* current = root;
-	while(current->next != NULL)
-		current = current->next;
-
-	current->next = malloc(sizeof(struct LinkedList));
-	current->next->point = point;
-	current->next->next = NULL;
-}
-
-void debugRuleArray(struct Rules* rules, int rules_length)
-{
-	printf("Rules: \n");
-	for(int i = 0; i < rules_length; i++) {
-		printf("Rule %c => %s\n", rules[i].id, rules[i].replace);
-	}
-}

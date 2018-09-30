@@ -12,7 +12,6 @@ enum GameState
 	GAMESTATE_REPL
 };
 
-// TODO: rename this to `Rule`
 struct Rules {
 	char id;
 	char* replace;
@@ -21,11 +20,6 @@ struct Rules {
 struct Point {
 	int x;
 	int y;
-};
-
-struct LinkedList {
-	struct Point point; // To make this generic, we might have void*
-	struct LinkedList* next;
 };
 
 enum MonsterTypes {
@@ -72,28 +66,22 @@ enum ReturnCodes {
 	SOMETHING_BROKE = 1
 };
 
+// TODO: refactor game level Graph into a database table
 struct Graph {
-	struct Room nodes[1024] ; // this should be an array
-	struct Edge edges[1024*4]; // this should be an array
+	struct Room nodes[1024] ;
+	struct Edge edges[1024*4];
 	unsigned int number_of_nodes;
 	unsigned int number_of_edges;
 };
 
+// TODO: refactor rules into into a Rule database table
 struct RulesWrapper {
 	struct Rules* rules;
 	int number_of_rules;
 };
 
 int add_room( struct Graph* dag, struct Point pos, char type );
-
-int add_monster_to_room(
-		struct Graph* dag, struct Point pos, char type);
-
-int add_edges(
-		struct Graph* dag, struct Point from, struct Point to );
-
-struct Point pop(struct LinkedList* root);
-void push(struct LinkedList* root, struct Point point);
-void debugRuleArray(struct Rules* rules, int rules_length);
+int add_monster_to_room(struct Graph* dag, struct Point pos, char type);
+int add_edges(struct Graph* dag, struct Point from, struct Point to );
 
 #endif

@@ -253,7 +253,6 @@ int main(int argc, char **argv)
 	systems_init(dbh);
 
 	int ch;
-	char* output = NULL;
 	struct Graph* dag = NULL;
 
 	struct Point current_room = {
@@ -294,11 +293,10 @@ int main(int argc, char **argv)
 		systems_update(dbh);
 		gamestate = *(int*) gamestate_column->data_begin;
 
-		if(output == NULL || dag == NULL || ch == KEY_ENTER) {
-			if(output != NULL) free(output);
+		if(dag == NULL || ch == KEY_ENTER) {
 			if(dag != NULL) free(dag);
 
-			output = rule_engine(
+			char* output = rule_engine(
 				rw.rules,
 				starting_rules,
 				num_replacements,
@@ -307,6 +305,7 @@ int main(int argc, char **argv)
 
 			// Travel the dungeon rule and gennerates a DAG
 			dag = create_dag_from_dungeonrule(output);
+			free(output);
 
 			// Finds starting room
 			for(size_t i=0; i<dag->number_of_nodes; i++) {
@@ -359,11 +358,9 @@ int main(int argc, char **argv)
 		update_column(gamestate_column, &gamestate, 0);
 	}
 
-	free(output);
 	free(dag);
 
 	systems_cleanup(dbh);
-	printf("End game\n");
 
 	return 0;
 }
