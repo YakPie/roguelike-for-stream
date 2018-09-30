@@ -88,7 +88,7 @@ void systems_init(struct Database_Handle dbh)
 		};
 		struct Iterator it = query(dbh, query_subsystems);
 		do {
-			for(int i=0; i < it.table->number_of_columns; i++) {
+			for(size_t i=0; i < it.table->number_of_columns; i++) {
 				if(strcmp(it.table->columns[i].name, "init_ptr") == 0) {
 					 subsystem_init ptr = *(subsystem_init*) get_ptr_column(it.table, it.row, i);
 					 if(ptr != NULL)
@@ -108,7 +108,7 @@ void systems_update(struct Database_Handle dbh)
 	};
 	struct Iterator it = query(dbh, query_subsystems);
 	do {
-		for(int i=0; i < it.table->number_of_columns; i++) {
+		for(size_t i=0; i < it.table->number_of_columns; i++) {
 			if(strcmp(it.table->columns[i].name, "update_ptr") == 0) {
 				 subsystem_update ptr = *(subsystem_update*) get_ptr_column(it.table, it.row, i);
 				 if(ptr != NULL)
@@ -134,7 +134,7 @@ void systems_cleanup(struct Database_Handle dbh)
 		};
 		struct Iterator it = query(dbh, query_subsystems);
 		do {
-			for(int i=0; i < it.table->number_of_columns; i++) {
+			for(size_t i=0; i < it.table->number_of_columns; i++) {
 				if(strcmp(it.table->columns[i].name, "cleanup_ptr") == 0) {
 					 subsystem_cleanup ptr = *(subsystem_cleanup*) get_ptr_column(it.table, it.row, i);
 					 if(ptr != NULL)

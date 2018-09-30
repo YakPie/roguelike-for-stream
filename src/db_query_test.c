@@ -4,6 +4,6 @@
 
 int main()
 {
-	struct YGQL_AST* ast = ygql_parse("position");
+	//struct YGQL_AST* ast = ygql_parse("position");
 	return 0;
 }

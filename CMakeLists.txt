@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.3)
 project(YakPie_s_Roguelike)
 
-set(CMAKE_C_FLAGS "-std=c11 -Wall -Wno-unused-function")
+set(CMAKE_C_FLAGS "-std=c11 -Wall -Wextra -Wno-unused-function -Wno-unused-parameter")
 find_package("Curses" REQUIRED)
 
 add_library(game

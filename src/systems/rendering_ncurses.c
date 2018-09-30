@@ -34,7 +34,7 @@ struct Point get_offset() {
 void print_room_ncurses(struct Graph* dag, int x, int y) {
 	struct Point offset = get_offset();
 
-	for(int i=0; i < dag->number_of_nodes; i++) {
+	for(size_t i=0; i < dag->number_of_nodes; i++) {
 		char room_type = dag->nodes[i].type; 
 		switch(dag->nodes[i].type) {
 			case 's':
@@ -54,7 +54,7 @@ void print_room_ncurses(struct Graph* dag, int x, int y) {
 		mvprintw(y + offset.y, x + offset.x, "%c", room_type);
 	}
 
-	for(int i=0; i < dag->number_of_edges; i++) {
+	for(size_t i=0; i < dag->number_of_edges; i++) {
 		int x = dag->edges[i].from.x + dag->edges[i].to.x,
 			 y = dag->edges[i].from.y + dag->edges[i].to.y;
 
@@ -66,7 +66,7 @@ void print_room_ncurses(struct Graph* dag, int x, int y) {
 }
 
 void print_debug_room_info(struct Graph* dag, int x, int y) {
-	for(int i=0; i<dag->number_of_nodes; i++) {
+	for(size_t i=0; i<dag->number_of_nodes; i++) {
 		if(dag->nodes[i].position.x == x &&
 			dag->nodes[i].position.y == y)
 		{

@@ -7,7 +7,7 @@
 
 struct Table* lookup_table_impl(struct Tables* tables, char* name)
 {
-	for(int i=0; i<tables->number_of_tables; i++) {
+	for(size_t i=0; i<tables->number_of_tables; i++) {
 		if(strcmp(tables->tables[i].name, name) == 0) {
 			return &(tables->tables[i]);
 		}
@@ -33,7 +33,7 @@ void* get_ptr_column(struct Table* table, size_t row, size_t i)
 
 struct Column* lookup_column_impl(struct Table* table, char* column_name)
 {
-	for(int i=0; i< table->number_of_columns; i++) {
+	for(size_t i=0; i< table->number_of_columns; i++) {
 		if(strcmp(table->columns[i].name, column_name) == 0) {
 			return &(table->columns[i]);
 		}

@@ -7,7 +7,7 @@ int add_room( struct Graph* dag, struct Point pos, char type ) {
 		return SOMETHING_BROKE;
 
 	// check that the room doesn't allready exist
-	for(int i=0; i < dag->number_of_nodes; i++) {
+	for(size_t i=0; i < dag->number_of_nodes; i++) {
 		if(
 			dag->nodes[i].position.x == pos.x && 
 			dag->nodes[i].position.y == pos.y
@@ -32,7 +32,7 @@ int add_monster_to_room(
 		char type
 ) {
 	
-	for(int i=0; i<dag->number_of_nodes; i++) {
+	for(size_t i=0; i<dag->number_of_nodes; i++) {
 		struct Room* room = &dag->nodes[i];
 		if(room->position.x == pos.x &&
 			room->position.y == pos.y)
@@ -74,7 +74,7 @@ int add_edges(
 		return ALL_GOOD;
 
 	// check that the edge doesn't allready exist
-	for(int i=0; i < dag->number_of_edges; i++) {
+	for(size_t i=0; i < dag->number_of_edges; i++) {
 		if(
 			dag->edges[i].from.x == from.x && 
 			dag->edges[i].from.y == from.y &&

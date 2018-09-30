@@ -18,7 +18,7 @@ void print_column(void *it, struct Datatype dt) {
 }
 
 void print_column_headers(struct Iterator it) {
-	for(int i=0; i < it.table->number_of_columns; i++) {
+	for(size_t i=0; i < it.table->number_of_columns; i++) {
 		printf("%10s\t", it.table->columns[i].name);
 	}
 	printf("\n");
@@ -26,7 +26,7 @@ void print_column_headers(struct Iterator it) {
 
 void print_column_data(struct Iterator it)
 {
-	for(int i=0; i < it.table->number_of_columns; i++) {
+	for(size_t i=0; i < it.table->number_of_columns; i++) {
 		print_column(
 				get_ptr_column(it.table, it.row, i),
 				it.table->columns[i].type

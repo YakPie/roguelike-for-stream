@@ -81,7 +81,7 @@ void print_current_room_ncurses(struct Graph* dag, int x, int y,
 		}
 	}
 
-	for(int i=0; i<dag->number_of_edges; i++) {
+	for(size_t i=0; i<dag->number_of_edges; i++) {
 		if(dag->edges[i].from.x == x &&
 			dag->edges[i].from.y == y)
 		{
@@ -291,7 +291,7 @@ int main(int argc, char **argv)
 			dag = create_dag_from_dungeonrule(output);
 
 			// Finds starting room
-			for(int i=0; i<dag->number_of_nodes; i++) {
+			for(size_t i=0; i<dag->number_of_nodes; i++) {
 				if(dag->nodes[i].type == 's') {
 					current_room.x = dag->nodes[i].position.x;
 					current_room.y = dag->nodes[i].position.y;
