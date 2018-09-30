@@ -44,6 +44,8 @@ add_library(game
 	src/systems/dummy_system.c
 	src/systems/frame_counter.h
 	src/systems/frame_counter.c
+	src/systems/repl_subsystem.h
+	src/systems/repl_subsystem.c
 	)
 
 add_executable(main src/main.c)

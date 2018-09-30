@@ -223,14 +223,6 @@ void position_move(char ch, struct Point* pos) {
 	}
 }
 
-enum GameState
-{
-	GAMESTATE_END,
-	GAMESTATE_MAP,
-	GAMESTATE_ROOM,
-	GAMESTATE_REPL
-};
-
 int main(int argc, char **argv)
 {
 	srand(time(NULL));
@@ -260,7 +252,6 @@ int main(int argc, char **argv)
 	// Initialize systems
 	systems_init(dbh);
 
-	// Setup ncurses
 	int ch;
 	char* output = NULL;
 	struct Graph* dag = NULL;
@@ -274,9 +265,34 @@ int main(int argc, char **argv)
 		.y = 0
 	};
 
-	int gamestate = GAMESTATE_MAP;
+	// Create table for gamestate
+	{
+		struct Column gamestate_column = {
+			.name = "gamestate",
+			.type = datatype_integer,
+			.count = 1
+		};
+		create_table(dbh, "gamestate", 1, gamestate_column);
+		
+		int gamestate = GAMESTATE_MAP;
+		struct InsertData gamestate_data = {
+			.name = "gamestate",
+			.data = &gamestate
+		};
+		insert_into(dbh, "gamestate", 1, gamestate_data);
+	}
+
+	int gamestate;
+	struct Query q = {
+		.table_name = "gamestate"
+	};
+	struct Iterator it = query(dbh, q);
+	struct Column* gamestate_column = lookup_column_impl(it.table, "gamestate");	
+	gamestate = *(int*) gamestate_column->data_begin;
+
 	while(gamestate != GAMESTATE_END) {
 		systems_update(dbh);
+		gamestate = *(int*) gamestate_column->data_begin;
 
 		if(output == NULL || dag == NULL || ch == KEY_ENTER) {
 			if(output != NULL) free(output);
@@ -315,19 +331,6 @@ int main(int argc, char **argv)
 					position_in_room
 				);
 				break;
-			case GAMESTATE_REPL:
-				refresh();
-				def_prog_mode();   // Save ncurses setting
-				endwin();          // Quit ncurses mode
-				setvbuf(stdout, NULL, _IOLBF, 0); // Reset stdout
-
-				// Enter REPL
-				while(repl(dbh));
-
-				reset_prog_mode(); // Get back to ncurses
-				refresh();
-				gamestate = GAMESTATE_MAP;
-				break;
 		}
 
 		ch = getch();
@@ -352,6 +355,8 @@ int main(int argc, char **argv)
 				gamestate = GAMESTATE_REPL;
 				break;
 		}
+		
+		update_column(gamestate_column, &gamestate, 0);
 	}
 
 	free(output);

@@ -3,6 +3,7 @@
 #include "dummy_system.h"
 #include "rendering_ncurses.h"
 #include "frame_counter.h"
+#include "repl_subsystem.h"
 
 void register_subsystem(
 		struct Database_Handle dbh,
@@ -67,6 +68,7 @@ void systems_init(struct Database_Handle dbh)
 	register_subsystem_s(dbh, dummy_system);
 	register_subsystem_s(dbh, rendering_ncurses);
 	register_subsystem_s(dbh, frame_counter);
+	register_subsystem_s(dbh, repl_subsystem);
 	
 	// Call init on sub_systems?
 	{

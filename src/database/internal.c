@@ -98,3 +98,34 @@ void destory_table(struct Database_Handle dbh, char* name)
 		}
 	}
 }
+
+void insert_into_impl(struct Tables* tables, char* table_name, int num, va_list args)
+{
+	struct Table* table = lookup_table_impl(tables, table_name);
+	for(int i=0; i<num; i++) {
+		struct InsertData data = va_arg(args, struct InsertData);
+		struct Column* column = lookup_column_impl(table, data.name);	
+
+		assert(column != NULL);
+		//size_t column_size = column->type.size * column->count;
+
+		// TODO: rellaoc if we don't have enough space
+		assert(
+			table->number_of_rows < table->rows_allocated
+		);
+
+		//void* data_current = column->data_begin + column_size * table->number_of_rows;
+		//memcpy(data_current, data.data, column_size);
+		update_column(column, data.data, table->number_of_rows);
+	}
+
+	table->number_of_rows++;
+}
+
+void update_column(struct Column* column, void * data, int row)
+{	
+	size_t column_size = column->type.size * column->count;
+	void* data_current = column->data_begin + column_size * row;
+
+	memcpy(data_current, data, column_size);
+}

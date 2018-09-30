@@ -4,6 +4,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+enum GameState
+{
+	GAMESTATE_END,
+	GAMESTATE_MAP,
+	GAMESTATE_ROOM,
+	GAMESTATE_REPL
+};
+
 // TODO: rename this to `Rule`
 struct Rules {
 	char id;

@@ -41,28 +41,6 @@ enum IterateStatus iterate(struct Iterator* it)
 	return ITERATE_END;
 }
 
-void insert_into_impl(struct Tables* tables, char* table_name,int num, va_list args)
-{
-	struct Table* table = lookup_table_impl(tables, table_name);
-	for(int i=0; i<num; i++) {
-		struct InsertData data = va_arg(args, struct InsertData);
-		struct Column* column = lookup_column_impl(table, data.name);	
-
-		assert(column != NULL);
-		size_t column_size = column->type.size * column->count;
-
-		// TODO: rellaoc if we don't have enough space
-		assert(
-			table->number_of_rows < table->rows_allocated
-		);
-
-		void* data_current = column->data_begin + column_size * table->number_of_rows;
-		memcpy(data_current, data.data, column_size);
-	}
-
-	table->number_of_rows++;
-}
-
 void insert_into(struct Database_Handle dbh, char* table_name, int num, ...)
 {
 	va_list arg_list;
