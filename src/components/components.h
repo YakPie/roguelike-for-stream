@@ -3,6 +3,18 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#undef KEY_ENTER
+
+enum NCURSES_KEYS {
+	KEY_D = 100,
+	KEY_W = 119,
+	KEY_A = 97,
+	KEY_S = 115,
+	KEY_M = 109,
+	KEY_R = 114,
+	KEY_ENTER = 10,
+	KEY_ESC   = 27
+};
 
 enum GameState
 {
