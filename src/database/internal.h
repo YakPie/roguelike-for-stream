@@ -100,11 +100,18 @@ struct BoundData
 	struct Column* column;
 };
 
+enum TableType
+{
+	ITERATOR_TABLE_POINTER, // Must be freed
+	ITERATOR_TABLE_REFRENCE // Not owned, must NOT be freed
+};
+
 struct Iterator
 {
 	size_t row;
 	int found_table;
 	struct Table* table;
+	enum TableType table_type;
 	struct BoundData bound_data[DATABASE_MAX_COLUMNS];
 	size_t number_of_bound_data;
 };

@@ -144,10 +144,7 @@ int main(int argc, char **argv)
 				break;
 		}
 		
-		update_column(
-				lookup_column(dbh, "gamestate", "gamestate"),
-				&gamestate,
-				0);
+		update_column(lookup_column(dbh, "gamestate", "gamestate"), &gamestate, 0);
 	}
 
 	free(dag);

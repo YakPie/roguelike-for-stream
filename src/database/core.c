@@ -10,7 +10,8 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 {
 	struct Iterator it = {
 		.row = 0,
-		.found_table = 0
+		.found_table = 0,
+		.table_type = ITERATOR_TABLE_REFRENCE
 	};
 
 	it.table = lookup_virtual_table(dbh, query.table_name);		
@@ -127,5 +128,12 @@ void update_bound_data(struct Iterator* it)
 			data,
 			column_offset_pr_row(it->bound_data[i].column)
 		);
+	}
+}
+
+void free_iterator(struct Iterator it)
+{
+	if(it.table_type == ITERATOR_TABLE_POINTER) {
+		free(it.table);
 	}
 }
