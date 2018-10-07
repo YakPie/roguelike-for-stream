@@ -12,17 +12,20 @@ static void subsystem_empty_func(struct Database_Handle dbh) {}
 
 static struct Datatype datatype_init_ptr = {
 	.name = "init_ptr",
-	.size = sizeof(subsystem_init)
+	.size = sizeof(subsystem_init),
+	.kind = REFERENCE_KIND
 };
 
 static struct Datatype datatype_update_ptr = {
 	.name = "update_ptr",
-	.size = sizeof(subsystem_update)
+	.size = sizeof(subsystem_update),
+	.kind = REFERENCE_KIND
 };
 
 static struct Datatype datatype_cleanup_ptr = {
 	.name = "cleanup_ptr",
-	.size = sizeof(subsystem_cleanup)
+	.size = sizeof(subsystem_cleanup),
+	.kind = REFERENCE_KIND
 };
 
 struct subsystem {

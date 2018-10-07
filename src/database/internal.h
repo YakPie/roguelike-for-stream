@@ -12,35 +12,49 @@ enum
 	DATABASE_MAX_COLUMNS = 255
 };
 
+enum Datatype_Kind {
+   VALUE_KIND,             // Copied based on size
+   NULL_TERMINATED_KIND,   // Copied based on null termination
+   POINTER_KIND,           // Pointer copied as value, but needs to be freed
+   REFERENCE_KIND,         // Pointer copied as value, but not owned / won't be freed
+   ENUM_KIND               // Copied as value / int
+};
+
 struct Datatype
 {
 	char *name;
 	size_t size;
+	enum Datatype_Kind kind; 
 };
 
 static struct Datatype datatype_integer = {
 	.name = "integer",
-	.size = sizeof(int)
+	.size = sizeof(int),
+	.kind = VALUE_KIND
 };
 
 static struct Datatype datatype_uint = {
 	.name = "uint",
-	.size = sizeof(unsigned int)
+	.size = sizeof(unsigned int),
+	.kind = VALUE_KIND
 };
 
 static struct Datatype datatype_float = {
 	.name = "float",
-	.size = sizeof(float)
+	.size = sizeof(float),
+	.kind = VALUE_KIND
 };
 
 static struct Datatype datatype_char = {
 	.name = "char",
-	.size = sizeof(char)
+	.size = sizeof(char),
+	.kind = VALUE_KIND
 };
 
 static struct Datatype datatype_string = {
 	.name = "string",
-	.size = sizeof(char)
+	.size = sizeof(char),
+	.kind = NULL_TERMINATED_KIND 
 };
 
 struct Column
