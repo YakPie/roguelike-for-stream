@@ -24,11 +24,15 @@ struct Table* lookup_virtual_table(struct Database_Handle dbh, char* name) {
 	return lookup_table_impl(dbh.virtual_tables, name);
 }
 
-void* get_ptr_column(struct Table* table, size_t row, size_t i)
+size_t column_offset_pr_row(struct Column* column)
 {
-	return table->columns[i].data_begin
-		  + row * table->columns[i].type.size *
-		  table->columns[i].count;
+	return column->type.size * column->count;
+}
+
+void* get_ptr_column_impl(struct Column* column, size_t row)
+{
+	size_t offset = row * column_offset_pr_row(column);
+	return column->data_begin + offset;
 }
 
 struct Column* lookup_column_impl(struct Table* table, char* column_name)

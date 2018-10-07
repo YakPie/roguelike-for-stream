@@ -281,17 +281,15 @@ int main(int argc, char **argv)
 		insert_into(dbh, "gamestate", 1, gamestate_data);
 	}
 
+	struct Iterator it = prepare_query(dbh, "gamestate", 0);
+
 	int gamestate;
-	struct Query q = {
-		.table_name = "gamestate"
-	};
-	struct Iterator it = query(dbh, q);
-	struct Column* gamestate_column = lookup_column_impl(it.table, "gamestate");	
-	gamestate = *(int*) gamestate_column->data_begin;
+	bind_column_data(&it, "gamestate", &gamestate);
+	update_bound_data(&it);
 
 	while(gamestate != GAMESTATE_END) {
 		systems_update(dbh);
-		gamestate = *(int*) gamestate_column->data_begin;
+		update_bound_data(&it);
 
 		if(dag == NULL || ch == KEY_ENTER) {
 			if(dag != NULL) free(dag);
@@ -355,7 +353,10 @@ int main(int argc, char **argv)
 				break;
 		}
 		
-		update_column(gamestate_column, &gamestate, 0);
+		update_column(
+				lookup_column(dbh, "gamestate", "gamestate"),
+				&gamestate,
+				0);
 	}
 
 	free(dag);

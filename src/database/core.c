@@ -97,3 +97,35 @@ void create_table(struct Database_Handle dbh, char* name, int num, ...)
 	}
 }
 
+struct Iterator prepare_query(struct Database_Handle dbh, char* query_string, int num, ...)
+{
+	// TODO: implement parse_query
+	// struct Query q = parse_query(query_string);
+	struct Query q = {
+		.table_name = query_string
+	};
+	return query(dbh, q);
+}
+
+void bind_column_data(struct Iterator* it, char* column_name, void* bound_variable)
+{
+	struct Column* column = lookup_column_impl(it->table, column_name);	
+	struct BoundData bd = {
+		.refrence_to_data = bound_variable,
+		.column = column
+	};
+	it->bound_data[it->number_of_bound_data] = bd;
+	it->number_of_bound_data++;
+}
+
+void update_bound_data(struct Iterator* it)
+{
+	for(size_t i=0; i < it->number_of_bound_data; i++) {
+		void* data = get_ptr_column_impl(it->bound_data[i].column, it->row);
+		memcpy(
+			it->bound_data[i].refrence_to_data, 
+			data,
+			column_offset_pr_row(it->bound_data[i].column)
+		);
+	}
+}

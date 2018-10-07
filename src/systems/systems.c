@@ -72,19 +72,13 @@ void systems_init(struct Database_Handle dbh)
 	
 	// Call init on sub_systems?
 	{
-		struct Query query_subsystems = {
-			.table_name = "subsystems"
-		};
-		struct Iterator it = query(dbh, query_subsystems);
+		struct Iterator it = prepare_query(dbh, "subsystems", 0);
 		do {
-			for(size_t i=0; i < it.table->number_of_columns; i++) {
-				if(strcmp(it.table->columns[i].name, "init_ptr") == 0) {
-					 subsystem_init ptr = *(subsystem_init*) get_ptr_column(it.table, it.row, i);
-					 if(ptr != NULL)
-						ptr(dbh);
-					 break;
-				}
-			}
+			subsystem_init ptr;
+			bind_column_data(&it, "init_ptr", &ptr);
+			update_bound_data(&it);
+			if(ptr != NULL)
+				ptr(dbh);
 		} while(iterate(&it) != ITERATE_END);
 	}
 }
@@ -92,19 +86,13 @@ void systems_init(struct Database_Handle dbh)
 void systems_update(struct Database_Handle dbh)
 {
 	// Select from sub_systems and run update
-	struct Query query_subsystems = {
-		.table_name = "subsystems"
-	};
-	struct Iterator it = query(dbh, query_subsystems);
+	struct Iterator it = prepare_query(dbh, "subsystems", 0);
 	do {
-		for(size_t i=0; i < it.table->number_of_columns; i++) {
-			if(strcmp(it.table->columns[i].name, "update_ptr") == 0) {
-				 subsystem_update ptr = *(subsystem_update*) get_ptr_column(it.table, it.row, i);
-				 if(ptr != NULL)
-				 	ptr(dbh);
-				 break;
-			}
-		}
+		subsystem_update ptr;
+		bind_column_data(&it, "update_ptr", &ptr);
+		update_bound_data(&it);
+		if(ptr != NULL)
+			ptr(dbh);
 	} while(iterate(&it) != ITERATE_END);
 }
 
@@ -117,21 +105,14 @@ void systems_unload(struct Database_Handle dbh)
 void systems_cleanup(struct Database_Handle dbh)
 {
 	// Call cleanup on sub_systems?
-	{
-		struct Query query_subsystems = {
-			.table_name = "subsystems"
-		};
-		struct Iterator it = query(dbh, query_subsystems);
-		do {
-			for(size_t i=0; i < it.table->number_of_columns; i++) {
-				if(strcmp(it.table->columns[i].name, "cleanup_ptr") == 0) {
-					 subsystem_cleanup ptr = *(subsystem_cleanup*) get_ptr_column(it.table, it.row, i);
-					 if(ptr != NULL)
-						ptr(dbh);
-					 break;
-				}
-			}
-		} while(iterate(&it) != ITERATE_END);
-	}
+	struct Iterator it = prepare_query(dbh, "subsystems", 0);
+	do {
+		subsystem_cleanup ptr;
+		bind_column_data(&it, "cleanup_ptr", &ptr);
+		update_bound_data(&it);
+		if(ptr != NULL)
+			ptr(dbh);
+	} while(iterate(&it) != ITERATE_END);
+
 	// Destory table sub_systems
 }

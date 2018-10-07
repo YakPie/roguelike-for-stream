@@ -7,6 +7,11 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+enum
+{
+	DATABASE_MAX_COLUMNS = 255
+};
+
 struct Datatype
 {
 	char *name;
@@ -58,7 +63,7 @@ struct Table
 {
 	char *name;
 
-	struct Column columns[255];
+	struct Column columns[DATABASE_MAX_COLUMNS];
 	size_t number_of_columns;
 
 	size_t number_of_rows;
@@ -89,11 +94,19 @@ struct Query
 	// filter method (WHERE)
 };
 
+struct BoundData
+{
+	void* refrence_to_data;
+	struct Column* column;
+};
+
 struct Iterator
 {
 	size_t row;
 	int found_table;
 	struct Table* table;
+	struct BoundData bound_data[DATABASE_MAX_COLUMNS];
+	size_t number_of_bound_data;
 };
 
 enum IterateStatus
@@ -113,7 +126,8 @@ struct Table* lookup_table(struct Database_Handle dbh, char* name);
 struct Table* lookup_virtual_table(struct Database_Handle dbh, char* name);
 struct Column* lookup_column_impl(struct Table* table, char* column_name);
 struct Column* lookup_column(struct Database_Handle dbh, char* table_name, char* column_name);
-void* get_ptr_column(struct Table* table, size_t row, size_t i);
+void* get_ptr_column_impl(struct Column* column, size_t row);
+size_t column_offset_pr_row(struct Column* column);
 void destory_table(struct Database_Handle dbh, char* name);
 void create_table_impl(struct Tables* tables, char* name, int num, va_list args);
 void create_virtual_table(struct Database_Handle dbh, char* name, int num, ...);

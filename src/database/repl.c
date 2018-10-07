@@ -27,10 +27,8 @@ void print_column_headers(struct Iterator it) {
 void print_column_data(struct Iterator it)
 {
 	for(size_t i=0; i < it.table->number_of_columns; i++) {
-		print_column(
-				get_ptr_column(it.table, it.row, i),
-				it.table->columns[i].type
-				);
+		struct Column* column = &(it.table->columns[i]);
+		print_column( get_ptr_column_impl(column, it.row), column->type );
 	}
 	printf("\n");
 }
