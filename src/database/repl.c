@@ -50,12 +50,9 @@ int repl(struct Database_Handle dbh)
 	};
 	struct Iterator it = query(dbh, query_table);
 
-	if(it.found_table != 1) return 1;
-
 	print_column_headers(it);
-	do {
+	while( iterate(&it) != ITERATE_END )
 		print_column_data(it);
-	} while( iterate(&it) != ITERATE_END );
 
 	return 1;
 }

@@ -64,9 +64,9 @@ void create_table_impl(struct Tables* tables, char const * const name, size_t nu
 	};
 
 	// Copying table name inn
-	size_t name_len = strlen(name);
-	new_table.name = calloc(name_len + 1, sizeof(char));
-	strcpy(new_table.name, name);
+	size_t name_len = strlen(name) + 1;
+	new_table.name = calloc(name_len, sizeof(char));
+	strncpy(new_table.name, name, name_len);
 
 	tables->tables[tables->number_of_tables] = new_table;
 

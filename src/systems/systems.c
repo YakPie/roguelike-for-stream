@@ -73,13 +73,14 @@ void systems_init(struct Database_Handle dbh)
 	// Call init on sub_systems?
 	{
 		struct Iterator it = prepare_query(dbh, "subsystems", 0);
-		do {
+		while(iterate(&it) != ITERATE_END)
+		{
 			subsystem_init ptr;
 			bind_column_data(&it, "init_ptr", &ptr);
 			update_bound_data(&it);
 			if(ptr != NULL)
 				ptr(dbh);
-		} while(iterate(&it) != ITERATE_END);
+		}
 	}
 }
 
@@ -87,13 +88,14 @@ void systems_update(struct Database_Handle dbh)
 {
 	// Select from sub_systems and run update
 	struct Iterator it = prepare_query(dbh, "subsystems", 0);
-	do {
+	while(iterate(&it) != ITERATE_END)
+	{
 		subsystem_update ptr;
 		bind_column_data(&it, "update_ptr", &ptr);
 		update_bound_data(&it);
 		if(ptr != NULL)
 			ptr(dbh);
-	} while(iterate(&it) != ITERATE_END);
+	}
 }
 
 void systems_unload(struct Database_Handle dbh)
@@ -106,13 +108,14 @@ void systems_cleanup(struct Database_Handle dbh)
 {
 	// Call cleanup on sub_systems?
 	struct Iterator it = prepare_query(dbh, "subsystems", 0);
-	do {
+	while(iterate(&it) != ITERATE_END)
+	{
 		subsystem_cleanup ptr;
 		bind_column_data(&it, "cleanup_ptr", &ptr);
 		update_bound_data(&it);
 		if(ptr != NULL)
 			ptr(dbh);
-	} while(iterate(&it) != ITERATE_END);
+	}
 
 	// Destory table sub_systems
 }

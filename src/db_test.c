@@ -71,11 +71,8 @@ int main()
 		struct Iterator it = query(dbh, test_query3);
 
 		print_column_headers(it);
-		do
-		{
+		while(iterate(&it) != ITERATE_END)
 			print_column_data(it);
-		}
-		while(iterate(&it) != ITERATE_END);
 	}
 	struct Column column_string = {
 		.name = "StringStuff",
@@ -103,11 +100,8 @@ int main()
 
 	// Printing out data
 	{
-		do
-		{
+		while(iterate(&it) != ITERATE_END)
 			print_column_data(it);
-		}
-		while(iterate(&it) != ITERATE_END);
 	} //*/
 
 	printf("\n query(\"tables\"); \n");
@@ -119,11 +113,8 @@ int main()
 		struct Iterator it = query(dbh, test_query);
 
 		print_column_headers(it);
-		do
-		{
+		while(iterate(&it) != ITERATE_END)
 			print_column_data(it);
-		}
-		while(iterate(&it) != ITERATE_END);
 	}
 
 	while(repl(dbh));

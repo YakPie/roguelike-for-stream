@@ -121,11 +121,18 @@ enum TableType
 	ITERATOR_TABLE_REFRENCE // Not owned, must NOT be freed
 };
 
+enum QueryStatus
+{
+	QUERYSTATUS_FIRST,
+	QUERYSTATUS_VALID_QUERY,
+	QUERYSTATUS_INVALID_QUERY
+};
+
 struct Iterator
 {
 	size_t row;
-	int found_table;
 	struct Table* table;
+	enum QueryStatus query_status;
 	enum TableType table_type;
 	struct BoundData bound_data[DATABASE_MAX_COLUMNS];
 	size_t number_of_bound_data;

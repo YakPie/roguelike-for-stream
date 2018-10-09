@@ -10,7 +10,7 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 {
 	struct Iterator it = {
 		.row = 0,
-		.found_table = 0,
+		.query_status = QUERYSTATUS_INVALID_QUERY,
 		.table_type = ITERATOR_TABLE_REFRENCE
 	};
 
@@ -28,12 +28,23 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 		}
 	}
 
-	it.found_table = 1;
+	it.query_status = QUERYSTATUS_FIRST;
 	return it;
 }
 
 enum IterateStatus iterate(struct Iterator* it)
 {
+	if(it->query_status == QUERYSTATUS_INVALID_QUERY)
+		return ITERATE_END;
+
+	if(it->query_status == QUERYSTATUS_FIRST) {
+		it->query_status = QUERYSTATUS_VALID_QUERY;
+		if(it->row < it->table->number_of_rows)
+			return ITERATE_OK;
+		else
+			return ITERATE_END;
+	}
+
 	if(it->row + 1 < it->table->number_of_rows) {
 		it->row++;
 		return ITERATE_OK;
@@ -97,9 +108,9 @@ void create_table(struct Database_Handle dbh, char const * const name, size_t nu
 			.name = "name",
 		};
 
-		size_t name_len = strlen(name);
-		name_data.data = calloc(name_len+1, sizeof(char));
-		strcpy(name_data.data, name);
+		size_t name_len = strlen(name)+1;
+		name_data.data = calloc(name_len, sizeof(char));
+		strncpy(name_data.data, name, name_len);
 
 		insert_into_virtual_table(dbh, "tables", 1, name_data);
 	}
@@ -112,9 +123,9 @@ struct Iterator prepare_query(
 	// struct Query q = parse_query(query_string);
 	struct Query q = {0};
 
-	size_t query_string_len = strlen(query_string);
-	q.table_name = calloc(query_string_len + 1, sizeof(char));
-	strcpy(q.table_name, query_string);
+	size_t query_string_len = strlen(query_string) + 1;
+	q.table_name = calloc(query_string_len, sizeof(char));
+	strncpy(q.table_name, query_string, query_string_len);
 
 	return query(dbh, q);
 }
