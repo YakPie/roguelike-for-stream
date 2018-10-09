@@ -60,7 +60,7 @@ void create_table_impl(struct Tables* tables, char const * const name, size_t nu
 	struct Table new_table = {
 		.number_of_rows = 0,
 		.rows_allocated = DATABASE_MAX_ROWS,
-		.datalayout = DATALAYOUT_ROW_ORIENTED
+		.datalayout = DATALAYOUT_COLOUMN_ORIENTED
 	};
 
 	// Copying table name inn
@@ -69,15 +69,14 @@ void create_table_impl(struct Tables* tables, char const * const name, size_t nu
 	strncpy(new_table.name, name, name_len);
 
 	tables->tables[tables->number_of_tables] = new_table;
+	struct Table* table = &tables->tables[tables->number_of_tables];
 
 	for(size_t i=0; i<num; i++) {
-		struct Column* current_column = &(tables
-			->tables[tables->number_of_tables]
-			.columns[i]);
+		struct Column* current_column = &(table->columns[i]);
 
 		*current_column = va_arg(args, struct Column);
 
-		void *data = calloc(DATABASE_MAX_ROWS, current_column->type.size);
+		void *data = calloc(DATABASE_MAX_ROWS, column_offset_pr_row(current_column));
 		assert(data);
 		current_column->data_begin = data;
 	}
