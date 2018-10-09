@@ -18,6 +18,9 @@ void print_column(void *it, struct Datatype dt) {
 }
 
 void print_column_headers(struct Iterator it) {
+	if(it.query_status == QUERYSTATUS_INVALID_QUERY)
+		return;
+
 	for(size_t i=0; i < it.table->number_of_columns; i++) {
 		printf("%10s\t", it.table->columns[i].name);
 	}
@@ -26,6 +29,9 @@ void print_column_headers(struct Iterator it) {
 
 void print_column_data(struct Iterator it)
 {
+	if(it.query_status == QUERYSTATUS_INVALID_QUERY)
+		return;
+
 	for(size_t i=0; i < it.table->number_of_columns; i++) {
 		struct Column* column = &(it.table->columns[i]);
 		print_column( get_ptr_column_impl(column, it.row), column->type );
@@ -45,10 +51,7 @@ int repl(struct Database_Handle dbh)
 	if(strcmp(name, "") == 0)
 		return 0;
 
-	struct Query query_table = {
-		.table_name = name
-	};
-	struct Iterator it = query(dbh, query_table);
+	struct Iterator it = prepare_query(dbh, name, 0);
 
 	print_column_headers(it);
 	while( iterate(&it) != ITERATE_END )
