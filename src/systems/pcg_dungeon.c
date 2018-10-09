@@ -44,7 +44,7 @@ char* replace(struct Rules* rules, int rules_length, char check)
 {
 	// Shuffle up the rules array
 	for(int i = 0; i < rules_length; i++) {
-		size_t random = rand() % rules_length;
+		int random = rand() % rules_length;
 		struct Rules tmp = rules[random];
 		rules[random] = rules[i];
 		rules[i] = tmp;
@@ -73,11 +73,11 @@ char* rule_engine(
 	// Replacement rules applying
 	for(int for_i=0; for_i<num_replacements; for_i++) {
 		strcpy(output, input);
-		int output_i = 0;
-		int output_len = strlen(output);
+		size_t output_i = 0;
+		size_t output_len = strlen(output);
 
 		for(
-				int input_i = 0;
+				size_t input_i = 0;
 				input_i < output_len && input_i < buffer_size;
 				input_i++
 			) {

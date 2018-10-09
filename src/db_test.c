@@ -63,19 +63,20 @@ int main()
 	}
 
 	// Query data back
-	printf("\n");
-	struct Query test_query3 = {
-		.table_name = "table_with_columns"
-	};
-	struct Iterator it = query(dbh, test_query3);
-
-	print_column_headers(it);
-	do
 	{
-		print_column_data(it);
-	}
-	while(iterate(&it) != ITERATE_END);
+		printf("\n");
+		struct Query test_query3 = {
+			.table_name = "table_with_columns"
+		};
+		struct Iterator it = query(dbh, test_query3);
 
+		print_column_headers(it);
+		do
+		{
+			print_column_data(it);
+		}
+		while(iterate(&it) != ITERATE_END);
+	}
 	struct Column column_string = {
 		.name = "StringStuff",
 		.type = datatype_string,

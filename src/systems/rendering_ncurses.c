@@ -45,7 +45,8 @@ void print_door(struct Point current, struct Point towards,
 	}
 }
 
-void print_current_room_ncurses(struct Graph* dag, int x, int y, struct Point player) {
+void print_current_room_ncurses(struct Graph* dag,
+		struct Point current_room, struct Point player) {
 	struct Point offset = get_offset();
 
 	int row, col;
@@ -66,8 +67,8 @@ void print_current_room_ncurses(struct Graph* dag, int x, int y, struct Point pl
 	}
 
 	for(size_t i=0; i<dag->number_of_edges; i++) {
-		if(dag->edges[i].from.x == x &&
-			dag->edges[i].from.y == y)
+		if(dag->edges[i].from.x == current_room.x &&
+			dag->edges[i].from.y == current_room.y)
 		{
 			print_door(
 				dag->edges[i].from,
@@ -78,8 +79,8 @@ void print_current_room_ncurses(struct Graph* dag, int x, int y, struct Point pl
 			);
 		}
 
-		if(dag->edges[i].to.x == x &&
-			dag->edges[i].to.y == y)
+		if(dag->edges[i].to.x == current_room.x &&
+			dag->edges[i].to.y == current_room.y)
 		{
 			print_door(
 				dag->edges[i].to,
@@ -159,7 +160,7 @@ int collision_detection(struct Point current_pos, enum Direction direction) {
 	return 0; // No collision found
 }
 
-void position_move(char ch, struct Point* pos) {
+void position_move(int ch, struct Point* pos) {
 	switch(ch) {
 		case KEY_W:
 			mvprintw(5, 10, "KEY_UP!");
@@ -223,7 +224,7 @@ struct Point get_offset() {
 	return ret;
 }
 
-void print_room_ncurses(struct Graph* dag, int x, int y) {
+void print_room_ncurses(struct Graph* dag, int player_x, int player_y) {
 	struct Point offset = get_offset();
 
 	for(size_t i=0; i < dag->number_of_nodes; i++) {
@@ -253,7 +254,7 @@ void print_room_ncurses(struct Graph* dag, int x, int y) {
 		mvprintw(y + offset.y, x + offset.x, ".");
 	}
 
-	mvprintw(y * 2 + offset.y, x * 2 + offset.x, "@");
+	mvprintw(player_y * 2 + offset.y, player_x * 2 + offset.x, "@");
 	refresh();
 }
 

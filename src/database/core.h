@@ -4,12 +4,12 @@
 #include "internal.h"
 
 struct Database_Handle new_database();
-void create_table(struct Database_Handle dbh, char* name, int num, ...);
-void insert_into(struct Database_Handle dbh, char* table_name, int num, ...);
+void create_table(struct Database_Handle dbh, char* name, size_t num, ...);
+void insert_into(struct Database_Handle dbh, char* table_name, size_t num, ...);
 
 // Query
 struct Iterator query(struct Database_Handle dbh, struct Query query);
-struct Iterator prepare_query(struct Database_Handle dbh, char* query, int num, ...);
+struct Iterator prepare_query(struct Database_Handle dbh, char* query, size_t num, ...);
 enum IterateStatus iterate(struct Iterator* it);
 void free_iterator(struct Iterator it);
 

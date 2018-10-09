@@ -150,9 +150,9 @@ struct Column* lookup_column(struct Database_Handle dbh, char* table_name, char*
 void* get_ptr_column_impl(struct Column* column, size_t row);
 size_t column_offset_pr_row(struct Column* column);
 void destory_table(struct Database_Handle dbh, char* name);
-void create_table_impl(struct Tables* tables, char* name, int num, va_list args);
-void create_virtual_table(struct Database_Handle dbh, char* name, int num, ...);
-void insert_into_impl(struct Tables* tables, char* table_name,int num, va_list args);
-void update_column(struct Column* column, void * data, int row);
+void create_table_impl(struct Tables* tables, char* name, size_t num, va_list args);
+void create_virtual_table(struct Database_Handle dbh, char* name, size_t num, ...);
+void insert_into_impl(struct Tables* tables, char* table_name, size_t num, va_list args);
+void update_column(struct Column* column, void * data, size_t row);
 
 #endif

@@ -7,13 +7,12 @@ set(CMAKE_C_FLAGS
 	-Wextra \
 	-Wpedantic \
 	-Wno-unused-function \
-	-Wno-unused-parameter"
-	# TODO: test out these warnings and fix them
-	#-Wconversion \
-	#-Wcast-align \
-	#-Wcast-qual \
-	#-Wpointer-arith \
-	#-Wshadow \
+	-Wno-unused-parameter \
+	-Wconversion \
+	-Wcast-align \
+	-Wcast-qual \
+	-Wpointer-arith \
+	-Wshadow"
 )
 
 find_package("Curses" REQUIRED)

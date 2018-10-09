@@ -59,13 +59,13 @@ beginning:
 	if(ret == 1) {
 		if(strlen(buffer) == 1) {
 			tk.type = TOKENTYPE_ID;
-			tk.data = calloc(sizeof(char), 2);
+			tk.data = calloc(2, sizeof(char));
 			tk.data[0] = buffer[0];
 			return tk;
 		}
 		else if(strlen(buffer) > 1) {
 			tk.type = TOKENTYPE_REPLACE;
-			tk.data = calloc(sizeof(char), ret+1);
+			tk.data = calloc((size_t)ret + 1, sizeof(char));
 			strncpy(tk.data, buffer, ret+1);
 			return tk;
 		}

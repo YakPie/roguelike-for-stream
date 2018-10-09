@@ -54,7 +54,7 @@ struct Column* lookup_column(struct Database_Handle dbh, char* table_name, char*
 	);
 }
 
-void create_table_impl(struct Tables* tables, char* name, int num, va_list args)
+void create_table_impl(struct Tables* tables, char* name, size_t num, va_list args)
 {
 	struct Table new_table = {
 		.name = name,
@@ -65,7 +65,7 @@ void create_table_impl(struct Tables* tables, char* name, int num, va_list args)
 
 	tables->tables[tables->number_of_tables] = new_table;
 
-	for(int i=0; i<num; i++) {
+	for(size_t i=0; i<num; i++) {
 		struct Column* current_column = &(tables
 			->tables[tables->number_of_tables]
 			.columns[i]);
@@ -83,7 +83,7 @@ void create_table_impl(struct Tables* tables, char* name, int num, va_list args)
 	tables->number_of_tables++;
 }
 
-void create_virtual_table(struct Database_Handle dbh, char* name, int num, ...)
+void create_virtual_table(struct Database_Handle dbh, char* name, size_t num, ...)
 {
 	assert(dbh.tables != NULL);
 	assert(dbh.tables->number_of_tables < 255);
@@ -103,10 +103,10 @@ void destory_table(struct Database_Handle dbh, char* name)
 	}
 }
 
-void insert_into_impl(struct Tables* tables, char* table_name, int num, va_list args)
+void insert_into_impl(struct Tables* tables, char* table_name, size_t num, va_list args)
 {
 	struct Table* table = lookup_table_impl(tables, table_name);
-	for(int i=0; i<num; i++) {
+	for(size_t i=0; i<num; i++) {
 		struct InsertData data = va_arg(args, struct InsertData);
 		struct Column* column = lookup_column_impl(table, data.name);	
 
@@ -120,7 +120,7 @@ void insert_into_impl(struct Tables* tables, char* table_name, int num, va_list 
 	table->number_of_rows++;
 }
 
-void update_column(struct Column* column, void * data, int row)
+void update_column(struct Column* column, void * data, size_t row)
 {	
 	size_t column_size = column->type.size * column->count;
 	void* dst = (char*)column->data_begin + column_size * row;

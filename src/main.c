@@ -16,7 +16,7 @@
 
 int main(int argc, char **argv)
 {
-	srand(time(NULL));
+	srand((unsigned)time(NULL));
 
 	if(argc < 2) {
 		printf("takes a level\n");
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
 			case GAMESTATE_ROOM:
 				print_current_room_ncurses(
 					dag,
-					current_room.x, current_room.y,
+					current_room,
 					position_in_room
 				);
 				break;

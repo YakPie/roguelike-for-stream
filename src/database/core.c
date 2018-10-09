@@ -42,7 +42,7 @@ enum IterateStatus iterate(struct Iterator* it)
 	return ITERATE_END;
 }
 
-void insert_into(struct Database_Handle dbh, char* table_name, int num, ...)
+void insert_into(struct Database_Handle dbh, char* table_name, size_t num, ...)
 {
 	va_list arg_list;
 	va_start(arg_list, num);
@@ -50,7 +50,7 @@ void insert_into(struct Database_Handle dbh, char* table_name, int num, ...)
 	va_end(arg_list);
 }
 
-void insert_into_virtual_table(struct Database_Handle dbh, char* table_name, int num, ...)
+void insert_into_virtual_table(struct Database_Handle dbh, char* table_name, size_t num, ...)
 {
 	va_list arg_list;
 	va_start(arg_list, num);
@@ -78,7 +78,7 @@ struct Database_Handle new_database()
 	return dbh;
 }
 
-void create_table(struct Database_Handle dbh, char* name, int num, ...)
+void create_table(struct Database_Handle dbh, char* name, size_t num, ...)
 {
 	assert(dbh.tables != NULL);
 	assert(dbh.tables->number_of_tables < 255);
@@ -98,7 +98,7 @@ void create_table(struct Database_Handle dbh, char* name, int num, ...)
 	}
 }
 
-struct Iterator prepare_query(struct Database_Handle dbh, char* query_string, int num, ...)
+struct Iterator prepare_query(struct Database_Handle dbh, char* query_string, size_t num, ...)
 {
 	// TODO: implement parse_query
 	// struct Query q = parse_query(query_string);
