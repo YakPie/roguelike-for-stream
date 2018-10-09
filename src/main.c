@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 		.x = 0,
 		.y = 0
 	};
-	/*
+
 	struct Column entityid_column = {
 		.name = "entityid",
 		.type = datatype_uint,
