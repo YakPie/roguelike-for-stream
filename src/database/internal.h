@@ -9,7 +9,8 @@
 
 enum
 {
-	DATABASE_MAX_COLUMNS = 255
+	DATABASE_MAX_COLUMNS = 255,
+	DATABASE_MAX_ROWS = 255
 };
 
 enum Datatype_Kind {
@@ -142,17 +143,20 @@ struct InsertData
 	void *data;
 };
 
-struct Table* lookup_table_impl(struct Tables* tables, char* name);
-struct Table* lookup_table(struct Database_Handle dbh, char* name);
-struct Table* lookup_virtual_table(struct Database_Handle dbh, char* name);
-struct Column* lookup_column_impl(struct Table* table, char* column_name);
-struct Column* lookup_column(struct Database_Handle dbh, char* table_name, char* column_name);
+struct Table* lookup_table_impl(struct Tables* tables, char const * const name);
+struct Table* lookup_table(struct Database_Handle dbh, char const * const name);
+struct Table* lookup_virtual_table(struct Database_Handle dbh, char const * const name);
+struct Column* lookup_column_impl(struct Table* table, char const * const column_name);
+struct Column* lookup_column(struct Database_Handle dbh,
+		char const * const table_name, char const * const column_name);
 void* get_ptr_column_impl(struct Column* column, size_t row);
 size_t column_offset_pr_row(struct Column* column);
-void destory_table(struct Database_Handle dbh, char* name);
-void create_table_impl(struct Tables* tables, char* name, size_t num, va_list args);
-void create_virtual_table(struct Database_Handle dbh, char* name, size_t num, ...);
-void insert_into_impl(struct Tables* tables, char* table_name, size_t num, va_list args);
+void destory_table(struct Database_Handle dbh, char const * const name);
+void create_table_impl(
+		struct Tables* tables, char const * const name, size_t num, va_list args);
+void create_virtual_table(
+		struct Database_Handle dbh, char const * const name, size_t num, ...);
+void insert_into_impl(struct Tables* tables, char const * const table_name, size_t num, va_list args);
 void update_column(struct Column* column, void * data, size_t row);
 
 #endif

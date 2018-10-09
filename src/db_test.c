@@ -83,12 +83,14 @@ int main()
 		.count = 255
 	};
 	create_table(dbh, "table_with_char", 1, column_string);
+
+	char * test_string_data = "test_strign";
 	struct InsertData column_StringStuff = {
 		.name = "StringStuff",
-		.data = "test" 
+		.data = test_string_data
 	};
-	insert_into(
-			dbh, "table_with_char", 1, column_StringStuff);
+	insert_into(dbh, "table_with_char", 1, column_StringStuff);
+
 	/*
 	struct Query test_query4 = {
 		.table_name = "table_with_char"

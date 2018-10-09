@@ -4,6 +4,7 @@ project(YakPie_s_Roguelike)
 set(CMAKE_C_FLAGS
 	"-std=c11 \
 	-Wall \
+	-Werror \
 	-Wextra \
 	-Wpedantic \
 	-Wno-unused-function \

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-struct Table* lookup_table_impl(struct Tables* tables, char* name)
+struct Table* lookup_table_impl(struct Tables* tables, char const * const name)
 {
 	for(size_t i=0; i<tables->number_of_tables; i++) {
 		if(strcmp(tables->tables[i].name, name) == 0) {
@@ -16,11 +16,11 @@ struct Table* lookup_table_impl(struct Tables* tables, char* name)
 	return NULL;
 }
 
-struct Table* lookup_table(struct Database_Handle dbh, char* name) {
+struct Table* lookup_table(struct Database_Handle dbh, char const * const name) {
 	return lookup_table_impl(dbh.tables, name);
 }
 
-struct Table* lookup_virtual_table(struct Database_Handle dbh, char* name) {
+struct Table* lookup_virtual_table(struct Database_Handle dbh, char const * const name) {
 	return lookup_table_impl(dbh.virtual_tables, name);
 }
 
@@ -35,7 +35,7 @@ void* get_ptr_column_impl(struct Column* column, size_t row)
 	return (char *)column->data_begin + offset;
 }
 
-struct Column* lookup_column_impl(struct Table* table, char* column_name)
+struct Column* lookup_column_impl(struct Table* table, char const * const column_name)
 {
 	for(size_t i=0; i< table->number_of_columns; i++) {
 		if(strcmp(table->columns[i].name, column_name) == 0) {
@@ -46,7 +46,8 @@ struct Column* lookup_column_impl(struct Table* table, char* column_name)
 	return NULL;
 }
 
-struct Column* lookup_column(struct Database_Handle dbh, char* table_name, char* column_name)
+struct Column* lookup_column(struct Database_Handle dbh,
+		char const * const table_name, char const * const column_name)
 {
 	return lookup_column_impl(
 		lookup_table(dbh, table_name),
@@ -54,14 +55,18 @@ struct Column* lookup_column(struct Database_Handle dbh, char* table_name, char*
 	);
 }
 
-void create_table_impl(struct Tables* tables, char* name, size_t num, va_list args)
+void create_table_impl(struct Tables* tables, char const * const name, size_t num, va_list args)
 {
 	struct Table new_table = {
-		.name = name,
 		.number_of_rows = 0,
-		.rows_allocated = 255,
+		.rows_allocated = DATABASE_MAX_ROWS,
 		.datalayout = DATALAYOUT_ROW_ORIENTED
 	};
+
+	// Copying table name inn
+	size_t name_len = strlen(name);
+	new_table.name = calloc(name_len + 1, sizeof(char));
+	strcpy(new_table.name, name);
 
 	tables->tables[tables->number_of_tables] = new_table;
 
@@ -72,8 +77,8 @@ void create_table_impl(struct Tables* tables, char* name, size_t num, va_list ar
 
 		*current_column = va_arg(args, struct Column);
 
-		void *data = calloc(current_column->type.size, 255);
-
+		void *data = calloc(DATABASE_MAX_ROWS, current_column->type.size);
+		assert(data);
 		current_column->data_begin = data;
 	}
 
@@ -83,7 +88,7 @@ void create_table_impl(struct Tables* tables, char* name, size_t num, va_list ar
 	tables->number_of_tables++;
 }
 
-void create_virtual_table(struct Database_Handle dbh, char* name, size_t num, ...)
+void create_virtual_table(struct Database_Handle dbh, char const * const name, size_t num, ...)
 {
 	assert(dbh.tables != NULL);
 	assert(dbh.tables->number_of_tables < 255);
@@ -94,7 +99,7 @@ void create_virtual_table(struct Database_Handle dbh, char* name, size_t num, ..
 	va_end(args);
 }
 
-void destory_table(struct Database_Handle dbh, char* name)
+void destory_table(struct Database_Handle dbh, char const * const name)
 {
 	for(size_t i_t=0; i_t<dbh.tables->number_of_tables; i_t++) {
 		if(strcmp(dbh.tables->tables[i_t].name, name) == 0) {
@@ -103,7 +108,7 @@ void destory_table(struct Database_Handle dbh, char* name)
 	}
 }
 
-void insert_into_impl(struct Tables* tables, char* table_name, size_t num, va_list args)
+void insert_into_impl(struct Tables* tables, char const * const table_name, size_t num, va_list args)
 {
 	struct Table* table = lookup_table_impl(tables, table_name);
 	for(size_t i=0; i<num; i++) {

@@ -42,7 +42,7 @@ enum IterateStatus iterate(struct Iterator* it)
 	return ITERATE_END;
 }
 
-void insert_into(struct Database_Handle dbh, char* table_name, size_t num, ...)
+void insert_into(struct Database_Handle dbh, char const * const table_name, size_t num, ...)
 {
 	va_list arg_list;
 	va_start(arg_list, num);
@@ -50,7 +50,8 @@ void insert_into(struct Database_Handle dbh, char* table_name, size_t num, ...)
 	va_end(arg_list);
 }
 
-void insert_into_virtual_table(struct Database_Handle dbh, char* table_name, size_t num, ...)
+void insert_into_virtual_table(
+		struct Database_Handle dbh, char const * const table_name, size_t num, ...)
 {
 	va_list arg_list;
 	va_start(arg_list, num);
@@ -62,8 +63,10 @@ void insert_into_virtual_table(struct Database_Handle dbh, char* table_name, siz
 struct Database_Handle new_database()
 {
 	struct Database_Handle dbh = {0};
-	dbh.tables         = calloc(sizeof(struct Tables), 1); 
-	dbh.virtual_tables = calloc(sizeof(struct Tables), 1); 
+	dbh.tables         = calloc(1, sizeof(struct Tables)); 
+	assert(dbh.tables);
+	dbh.virtual_tables = calloc(1, sizeof(struct Tables)); 
+	assert(dbh.virtual_tables);
 
 	// setup for the virtual table for holding table information
 	{
@@ -78,7 +81,7 @@ struct Database_Handle new_database()
 	return dbh;
 }
 
-void create_table(struct Database_Handle dbh, char* name, size_t num, ...)
+void create_table(struct Database_Handle dbh, char const * const name, size_t num, ...)
 {
 	assert(dbh.tables != NULL);
 	assert(dbh.tables->number_of_tables < 255);
@@ -92,23 +95,32 @@ void create_table(struct Database_Handle dbh, char* name, size_t num, ...)
 	{
 		struct InsertData name_data = {
 			.name = "name",
-			.data = name
 		};
+
+		size_t name_len = strlen(name);
+		name_data.data = calloc(name_len+1, sizeof(char));
+		strcpy(name_data.data, name);
+
 		insert_into_virtual_table(dbh, "tables", 1, name_data);
 	}
 }
 
-struct Iterator prepare_query(struct Database_Handle dbh, char* query_string, size_t num, ...)
+struct Iterator prepare_query(
+		struct Database_Handle dbh, char const * const query_string, size_t num, ...)
 {
 	// TODO: implement parse_query
 	// struct Query q = parse_query(query_string);
-	struct Query q = {
-		.table_name = query_string
-	};
+	struct Query q = {0};
+
+	size_t query_string_len = strlen(query_string);
+	q.table_name = calloc(query_string_len + 1, sizeof(char));
+	strcpy(q.table_name, query_string);
+
 	return query(dbh, q);
 }
 
-void bind_column_data(struct Iterator* it, char* column_name, void* bound_variable)
+void bind_column_data(
+		struct Iterator* it, char const * const column_name, void* bound_variable)
 {
 	struct Column* column = lookup_column_impl(it->table, column_name);	
 	struct BoundData bd = {
