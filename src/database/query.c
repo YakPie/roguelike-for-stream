@@ -51,7 +51,7 @@ struct YGQL_Token ygql_expected_token(
 
 struct YGQL_AST* ygql_parse(char* query) {
 	struct YGQL_AST* ast = calloc(sizeof(struct YGQL_AST), 1);
-	struct YGQL_Token token = {}; 
+	struct YGQL_Token token = {0}; 
 
 	token = ygql_expected_token(ygql_scanner(query), YGQL_TOKENTYPE_NAME, YGQL_TOKENTYPE_NAME);
 	return ast;

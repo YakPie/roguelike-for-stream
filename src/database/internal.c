@@ -32,7 +32,7 @@ size_t column_offset_pr_row(struct Column* column)
 void* get_ptr_column_impl(struct Column* column, size_t row)
 {
 	size_t offset = row * column_offset_pr_row(column);
-	return column->data_begin + offset;
+	return (char *)column->data_begin + offset;
 }
 
 struct Column* lookup_column_impl(struct Table* table, char* column_name)
@@ -123,7 +123,7 @@ void insert_into_impl(struct Tables* tables, char* table_name, int num, va_list 
 void update_column(struct Column* column, void * data, int row)
 {	
 	size_t column_size = column->type.size * column->count;
-	void* dst = column->data_begin + column_size * row;
+	void* dst = (char*)column->data_begin + column_size * row;
 
 	switch(column->type.kind) {
 		case NULL_TERMINATED_KIND:

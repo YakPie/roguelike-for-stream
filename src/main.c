@@ -54,7 +54,38 @@ int main(int argc, char **argv)
 		.x = 0,
 		.y = 0
 	};
+	/*
+	struct Column entityid_column = {
+		.name = "entityid",
+		.type = datatype_uint,
+		.count = 1
+	};
 
+	// Create table for position
+	{
+		struct Column x_column = {
+			.name = "x",
+			.type = datatype_integer,
+			.count = 1
+		};
+		struct Column y_column = {
+			.name = "y",
+			.type = datatype_integer,
+			.count = 1
+		};
+		create_table(dbh, "position", 3, entityid_column, x_column, y_column);
+	}
+
+	// Create table for rendering
+	{
+		struct Column rendering_char = {
+			.name = "rendering_char",
+			.type = datatype_char,
+			.count = 1
+		};
+		create_table(dbh, "rendering", 2, entityid_column, rendering_char);
+	}
+	//*/
 	// Create table for gamestate
 	{
 		struct Column gamestate_column = {
@@ -143,7 +174,7 @@ int main(int argc, char **argv)
 				gamestate = GAMESTATE_REPL;
 				break;
 		}
-		
+
 		update_column(lookup_column(dbh, "gamestate", "gamestate"), &gamestate, 0);
 	}
 

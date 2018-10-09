@@ -61,7 +61,7 @@ void insert_into_virtual_table(struct Database_Handle dbh, char* table_name, int
 
 struct Database_Handle new_database()
 {
-	struct Database_Handle dbh = {};
+	struct Database_Handle dbh = {0};
 	dbh.tables         = calloc(sizeof(struct Tables), 1); 
 	dbh.virtual_tables = calloc(sizeof(struct Tables), 1); 
 
