@@ -127,6 +127,7 @@ void create_table(struct Database_Handle dbh, char const * const name, size_t nu
 struct Iterator prepare_query(
 		struct Database_Handle dbh, char const * const query_string, size_t num, ...)
 {
+	(void) num;
 	/*
 	struct Query q = {0};
 

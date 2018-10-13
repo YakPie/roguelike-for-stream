@@ -6,7 +6,6 @@ set(CMAKE_C_FLAGS
 	-Wall \
 	-Wextra \
 	-Wpedantic \
-	-Wno-unused-parameter \
 	-Wconversion \
 	-Wcast-align \
 	-Wcast-qual \

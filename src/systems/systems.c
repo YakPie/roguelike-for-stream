@@ -7,6 +7,7 @@
 
 void subsystem_empty_func(struct Database_Handle dbh) 
 {
+	(void) dbh;
 }
 
 void register_subsystem(
@@ -104,6 +105,7 @@ void systems_update(struct Database_Handle dbh)
 
 void systems_unload(struct Database_Handle dbh)
 {
+	(void) dbh;
 	// Do any logic needed before reloading new version
 	// Destory table sub_systems
 }

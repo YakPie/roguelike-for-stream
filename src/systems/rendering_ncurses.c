@@ -145,6 +145,9 @@ struct Point move_in_direction(struct Point old_pos, enum Direction direction)
 }
 
 int collision_detection(struct Point current_pos, enum Direction direction) {
+	(void) current_pos;
+	(void) direction;
+	// TODO: implement method
 	/*
 	struct Point new_pos = move_in_direction(
 		current_pos,
@@ -197,6 +200,8 @@ void position_move(int ch, struct Point* pos) {
 
 void rendering_ncurses_init(struct Database_Handle dbh)
 {
+	(void) dbh;
+
 	initscr();
 	noecho();
 	halfdelay(1);
@@ -204,11 +209,12 @@ void rendering_ncurses_init(struct Database_Handle dbh)
 
 void rendering_ncurses_update(struct Database_Handle dbh)
 {
-	
+	(void) dbh;
 }
 
 void rendering_ncurses_cleanup(struct Database_Handle dbh)
 {
+	(void) dbh;
 	endwin();
 }
 

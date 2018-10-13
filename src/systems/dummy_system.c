@@ -3,5 +3,7 @@
 
 void subsystem_dummy_system_update(struct Database_Handle dbh)
 {
+	(void) dbh;
+
 	mvprintw(3, 10, "subsystem dummy system");
 }
