@@ -11,11 +11,15 @@ set(CMAKE_C_FLAGS
 	-Wcast-align \
 	-Wcast-qual \
 	-Wpointer-arith \
-	-Wshadow \
+	-Wshadow"
+)
+if(("${CMAKE_C_COMPILER_ID}" STREQUAL "CLANG") OR ("${CMAKE_C_COMPILER_ID}" STREQUAL "AppleClang"))
+	message("Building with clang")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
 	-Weverything \
 	-Wno-padded \
-	-Wno-class-varargs"
-)
+	-Wno-class-varargs")
+endif()
 
 find_package("Curses" REQUIRED)
 
