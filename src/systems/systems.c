@@ -5,6 +5,10 @@
 #include "frame_counter.h"
 #include "repl_subsystem.h"
 
+void subsystem_empty_func(struct Database_Handle dbh) 
+{
+}
+
 void register_subsystem(
 		struct Database_Handle dbh,
 		char *name,
