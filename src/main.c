@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 	// Initialize systems
 	systems_init(dbh);
 
-	int ch;
+	int ch = 0;
 	struct Graph* dag = NULL;
 
 	struct Point current_room = {

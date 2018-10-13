@@ -14,8 +14,6 @@ struct YGQL_Token ygql_scanner(struct ParserIt* it) {
 	};
 	char const * const query = it->query + it->offset;
 
-	//printf("querystring: %s\n", query);
-
 	switch(query[0]) {
 		case '.':
 			token.type = YGQL_TOKENTYPE_DOT;
@@ -47,12 +45,12 @@ char* ygql_token_descriptor(enum YGQL_TokenType type) {
 			return "TOKENTYPE_UNKNOWN";
 		case YGQL_TOKENTYPE_EOL:
 			return "TOKENTYPE_EOL";
-		default:
-			return "UNKNOWN_TOKEN";
 	}
+
+	return "UNKNOWN_TOKEN";
 }
 
-struct YGQL_Token ygql_expected_token(struct YGQL_Token cur, enum YGQL_TokenType type) 
+static struct YGQL_Token ygql_expected_token(struct YGQL_Token cur, enum YGQL_TokenType type) 
 { 
 	if(cur.type == type)
 		return cur;

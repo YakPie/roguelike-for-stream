@@ -133,7 +133,10 @@ void update_column(struct Column* column, void * data, size_t row)
 		case NULL_TERMINATED_KIND:
 			strncpy(dst, data, column_size);
 			break;
-		default:
+		case VALUE_KIND:
+		case POINTER_KIND:
+		case REFERENCE_KIND:
+		case ENUM_KIND:
 			memcpy(dst, data, column_size);
 			break;
 	};

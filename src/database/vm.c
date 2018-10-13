@@ -4,6 +4,9 @@
 
 void interpret_vm_bytecode(char* bytecode, size_t length)
 {
+	(void) bytecode;
+	(void) length;
+	/*
 	char *it = bytecode;
 	while(it < bytecode+length)
 	{
@@ -15,4 +18,5 @@ void interpret_vm_bytecode(char* bytecode, size_t length)
 		}
 		it++;
 	}
+	*/
 }

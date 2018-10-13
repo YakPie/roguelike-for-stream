@@ -3,7 +3,7 @@
 
 #include "internal.h"
 
-struct Database_Handle new_database();
+struct Database_Handle new_database(void);
 void create_table(struct Database_Handle dbh, char const * const name, size_t num, ...);
 void insert_into(struct Database_Handle dbh, char const * const table_name, size_t num, ...);
 

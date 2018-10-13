@@ -8,7 +8,7 @@ struct LinkedList {
 	struct LinkedList* next;
 };
 
-struct Point pop(struct LinkedList* root) {
+static struct Point pop(struct LinkedList* root) {
 	struct LinkedList* current = root;
 	struct LinkedList* past = root;
 	while(current->next != NULL) {
@@ -23,7 +23,7 @@ struct Point pop(struct LinkedList* root) {
 	return ret;
 }
 
-void push(struct LinkedList* root, struct Point point) {
+static void push(struct LinkedList* root, struct Point point) {
 	struct LinkedList* current = root;
 	while(current->next != NULL)
 		current = current->next;
@@ -33,13 +33,6 @@ void push(struct LinkedList* root, struct Point point) {
 	current->next->next = NULL;
 }
 
-void debugRuleArray(struct Rules* rules, int rules_length)
-{
-	printf("Rules: \n");
-	for(int i = 0; i < rules_length; i++) {
-		printf("Rule %c => %s\n", rules[i].id, rules[i].replace);
-	}
-}
 char* replace(struct Rules* rules, int rules_length, char check)
 {
 	// Shuffle up the rules array

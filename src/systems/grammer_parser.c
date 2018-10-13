@@ -29,7 +29,7 @@ struct Token {
 	int col;
 };
 
-struct Token scanner( FILE* fd ) {
+static struct Token scanner( FILE* fd ) {
 	struct Token tk;
 	tk.type = TOKENTYPE_UNKNOWN;
 	char buffer[100];
@@ -92,7 +92,7 @@ beginning:
 // RULE  => ID ARROW REPLACE COMMENT? NEWLINE
 // Rewrite a struct that also have the length of the array
 struct Rules parse_rule(struct Token cur, FILE* fd);
-struct RulesWrapper parse_level(FILE* fd) {	
+static struct RulesWrapper parse_level(FILE* fd) {	
 	struct Token cur;
 	const int max_rules = 10;
 	struct Rules* rules = calloc(sizeof(struct Rules), max_rules);
@@ -100,11 +100,12 @@ struct RulesWrapper parse_level(FILE* fd) {
 
 	cur = scanner(fd); 
 	while(cur.type != TOKENTYPE_END_OF_FILE) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
 		switch(cur.type) {
 			case TOKENTYPE_COMMENT:
 			case TOKENTYPE_NEWLINE:
 				break;
-
 			default:
 				rules[number_of_rules] = parse_rule(cur, fd);
 				number_of_rules++;
@@ -114,6 +115,7 @@ struct RulesWrapper parse_level(FILE* fd) {
 					break;
 				}
 		}
+#pragma GCC diagnostic pop
 		cur = scanner(fd); 
 	}
 
@@ -124,7 +126,7 @@ struct RulesWrapper parse_level(FILE* fd) {
 	return rw;
 }
 
-char * token_descriptor(enum TokenType type) {
+static char * token_descriptor(enum TokenType type) {
 	switch(type) {
 		case TOKENTYPE_ID:
 			return "TOKENTYPE_ID";
@@ -145,7 +147,7 @@ char * token_descriptor(enum TokenType type) {
 	return "UNKNOWN_TOKEN";
 }
 
-struct Token expected_token(
+static struct Token expected_token(
 		struct Token cur,
 		enum TokenType type,
 		enum TokenType type2)

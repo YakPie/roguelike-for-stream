@@ -69,7 +69,7 @@ void insert_into(struct Database_Handle dbh, char const * const table_name, size
 	va_end(arg_list);
 }
 
-void insert_into_virtual_table(
+static void insert_into_virtual_table(
 		struct Database_Handle dbh, char const * const table_name, size_t num, ...)
 {
 	va_list arg_list;

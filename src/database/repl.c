@@ -7,7 +7,7 @@ void print_column(void *it, struct Datatype dt) {
 	} else if(strcmp(dt.name, "uint") == 0) {
 		printf("%10u\t", *(unsigned int *)it);
 	} else if(strcmp(dt.name, "float") == 0) {
-		printf("%10f\t", *(float *)it);
+		printf("%10f\t", *(double *)it);
 	} else if(strcmp(dt.name, "char") == 0) {
 		printf("%10c\t", *(char *)it);
 	} else if(strcmp(dt.name, "string") == 0) {

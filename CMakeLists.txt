@@ -6,11 +6,15 @@ set(CMAKE_C_FLAGS
 	-Wall \
 	-Wextra \
 	-Wpedantic \
+	-pedantic \
 	-Wconversion \
 	-Wcast-align \
 	-Wcast-qual \
 	-Wpointer-arith \
-	-Wshadow"
+	-Wshadow \
+	-Weverything \
+	-Wno-padded \
+	-Wno-class-varargs"
 )
 
 find_package("Curses" REQUIRED)
