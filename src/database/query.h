@@ -33,6 +33,7 @@
 // Yakpie's Game Query Language (YGQL)
 
 #include <stdlib.h>
+#include "internal.h"
 
 // SELECT QUERY EXAMPLE:
 //    position(entityId, x, y), health(entityId, >0)?
@@ -54,19 +55,10 @@ enum YGQL_TokenType {
 struct YGQL_Token {
 	enum YGQL_TokenType type;
 	char *data;
-//	int line_number;
-//	int col;
 };
 
-struct YGQL_AST_Node_Name {
-	char *name;
-};
-
-struct YGQL_AST {
-	struct YGQL_AST_Node_Name name;	
-};
-
+char* ygql_token_descriptor(enum YGQL_TokenType type);
 struct YGQL_Token ygql_scanner(char* query);
-struct YGQL_AST* ygql_parse(char* query);
+struct Query parse_query(char const * const query);
 
 #endif

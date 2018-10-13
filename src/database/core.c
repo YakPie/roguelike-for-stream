@@ -5,6 +5,7 @@
 #include <stdarg.h>
 
 #include "core.h"
+#include "query.h"
 
 struct Iterator query(struct Database_Handle dbh, struct Query query)
 {
@@ -119,14 +120,7 @@ void create_table(struct Database_Handle dbh, char const * const name, size_t nu
 struct Iterator prepare_query(
 		struct Database_Handle dbh, char const * const query_string, size_t num, ...)
 {
-	// TODO: implement parse_query
-	// struct Query q = parse_query(query_string);
-	struct Query q = {0};
-
-	size_t query_string_len = strlen(query_string) + 1;
-	q.table_name = calloc(query_string_len, sizeof(char));
-	strncpy(q.table_name, query_string, query_string_len);
-
+	struct Query q = parse_query(query_string);
 	return query(dbh, q);
 }
 
