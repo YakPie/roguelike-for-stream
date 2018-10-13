@@ -47,7 +47,7 @@ enum YGQL_TokenType {
 //	YGQL_TOKENTYPE_CLOSE_PARENT,   // )
 //	YGQL_TOKENTYPE_SEPERATOR,      // ,
 //	YGQL_TOKENTYPE_QUESTIONMARK,   // ?
-//	YGQL_TOKENTYPE_ENDSTATEMENT,   // .
+	YGQL_TOKENTYPE_DOT,            // .
 //	YGQL_TOKENTYPE_DELETE,         // delete
 	YGQL_TOKENTYPE_UNKOWN,         // 
 };

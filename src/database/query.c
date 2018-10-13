@@ -9,19 +9,22 @@ enum {
 
 struct YGQL_Token ygql_scanner(char* query) {
 	struct YGQL_Token token = {
-		.type = YGQL_TOKENTYPE_UNKOWN 
+		.type = YGQL_TOKENTYPE_UNKOWN ,
+		.data = calloc(BUFFER_SIZE, sizeof(char))
 	};
-	char buffer[BUFFER_SIZE];
 
-	int ret = sscanf( query, "%s", buffer);
+	/*
+	switch(query[0]) {
+		case '.':
+			token.type = YGQL_TOKENTYPE_DOT;
+			return token;
+	}
+	*/
+
+	int ret = sscanf( query, "%s", token.data );
 	if(ret == 1)
 	{
 		token.type = YGQL_TOKENTYPE_NAME;
-
-		size_t len = strlen(buffer) + 1;
-		token.data = calloc(len, sizeof(char));
-		strncpy(token.data, buffer, BUFFER_SIZE);
-
 		return token;
 	}
 
@@ -39,21 +42,18 @@ char* ygql_token_descriptor(enum YGQL_TokenType type) {
 	}
 }
 
-struct YGQL_Token ygql_expected_token(
-		struct YGQL_Token cur, enum YGQL_TokenType type, enum YGQL_TokenType type2) 
+struct YGQL_Token ygql_expected_token(struct YGQL_Token cur, enum YGQL_TokenType type) 
 { 
-	if(cur.type == type || cur.type == type2)
+	if(cur.type == type)
 		return cur;
 
 	char *got = ygql_token_descriptor(cur.type);
 	char *expected1 = ygql_token_descriptor(type);
-	char *expected2 = ygql_token_descriptor(type2);
 	fprintf(
 		stderr,
-		"Unexpected token, got %s but expected %s or %s\n",
+		"Unexpected token, got %s but expected %s\n",
 		got,
-		expected1,
-		expected2
+		expected1
 	);
 	exit(1);
 }
@@ -61,17 +61,25 @@ struct YGQL_Token ygql_expected_token(
 struct Query parse_query(char const * const const_query) {
 	size_t len = strlen(const_query) + 1;
 	char* query = calloc(len, sizeof(char));
-	void * query_orgin = query;
+	char* query_orgin = query;
 	strncpy(query, const_query, len);
 
-	struct YGQL_Token token = {0}; 
-
-	token = ygql_expected_token(
-			ygql_scanner(query), YGQL_TOKENTYPE_NAME, YGQL_TOKENTYPE_NAME);
+	struct YGQL_Token token = ygql_expected_token(
+		ygql_scanner(query),
+		YGQL_TOKENTYPE_NAME
+	);
 
 	struct Query q = {
 		.table_name = token.data
 	};
+
+	/*
+	assert(query <= query_orgin + len);
+	ygql_expected_token(ygql_scanner(query), YGQL_TOKENTYPE_DOT);
+
+	assert(query <= query_orgin + len);
+	ygql_expected_token(ygql_scanner(query), YGQL_TOKENTYPE_NAME);
+	*/
 
 	free(query_orgin);
 	return q;
