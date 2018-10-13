@@ -104,7 +104,7 @@ struct Database_Handle
 struct Query
 {
 	char *table_name;
-	//int query_schema;
+	int query_schema;
 	// list column names
 	// filter method (WHERE)
 };

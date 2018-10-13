@@ -30,6 +30,13 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 	}
 
 	it.query_status = QUERYSTATUS_FIRST;
+
+	if(query.query_schema) {
+		// TODO: implement schema querying
+		fprintf(stderr, "Querying schema is not yet implemented\n");
+		it.query_status = QUERYSTATUS_INVALID_QUERY;
+	}
+
 	return it;
 }
 

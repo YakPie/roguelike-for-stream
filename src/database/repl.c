@@ -51,7 +51,7 @@ int repl(struct Database_Handle dbh)
 	if(strcmp(name, "") == 0)
 		return 0;
 
-	struct Iterator it = prepare_query(dbh, buffer, 0);
+	struct Iterator it = prepare_query(dbh, name, 0);
 
 	print_column_headers(it);
 	while( iterate(&it) != ITERATE_END )

@@ -1,6 +1,7 @@
 #ifndef DATABASE_QUERY_H
 #define DATABASE_QUERY_H 
 
+
 /*
  *  table Position {
  *		size_t entityId,
@@ -33,6 +34,7 @@
 // Yakpie's Game Query Language (YGQL)
 
 #include <stdlib.h>
+#include <stddef.h>
 #include "internal.h"
 
 // SELECT QUERY EXAMPLE:
@@ -49,6 +51,7 @@ enum YGQL_TokenType {
 //	YGQL_TOKENTYPE_QUESTIONMARK,   // ?
 	YGQL_TOKENTYPE_DOT,            // .
 //	YGQL_TOKENTYPE_DELETE,         // delete
+	YGQL_TOKENTYPE_EOL,            // End of line
 	YGQL_TOKENTYPE_UNKOWN,         // 
 };
 
@@ -57,8 +60,13 @@ struct YGQL_Token {
 	char *data;
 };
 
+struct ParserIt {
+	char const * const query;
+	ptrdiff_t offset;
+};
+
 char* ygql_token_descriptor(enum YGQL_TokenType type);
-struct YGQL_Token ygql_scanner(char* query);
+struct YGQL_Token ygql_scanner(struct ParserIt* it);
 struct Query parse_query(char const * const query);
 
 #endif
