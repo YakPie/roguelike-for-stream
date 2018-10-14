@@ -57,6 +57,8 @@ int repl(struct Database_Handle dbh)
 	while( iterate(&it) != ITERATE_END )
 		print_column_data(it);
 
+	free_iterator(it);
+
 	return 1;
 }
 

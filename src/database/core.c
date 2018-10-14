@@ -33,8 +33,27 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 
 	if(query.query_schema) {
 		// TODO: implement schema querying
-		fprintf(stderr, "Querying schema is not yet implemented\n");
-		it.query_status = QUERYSTATUS_INVALID_QUERY;
+		//fprintf(stderr, "Querying schema is not yet implemented\n");
+		//it.query_status = QUERYSTATUS_INVALID_QUERY;
+		struct Table* table_ref = it.table;
+	
+		{
+			struct Column name = {
+				.name = "name",
+				.type = datatype_string,
+				.count = 255
+			};
+			it.table = create_single_table_impl("tmp", 1, name);
+		}
+
+		for(size_t col = 0; col < table_ref->number_of_columns; col++) {
+			char* column_name = table_ref->columns[col].name;
+			struct InsertData name = {
+				.name = "name",
+				.data = column_name
+			};
+			insert_into_table_impl(it.table, 1, name);
+		}
 	}
 
 	return it;

@@ -159,10 +159,14 @@ struct Column* lookup_column(struct Database_Handle dbh,
 void* get_ptr_column_impl(struct Column* column, size_t row);
 size_t column_offset_pr_row(struct Column* column);
 void destory_table(struct Database_Handle dbh, char const * const name);
+struct Table* vcreate_single_table_impl(char const * const name, size_t num, va_list args);
+struct Table* create_single_table_impl(char const * const name, size_t num, ...);
 void create_table_impl(
 		struct Tables* tables, char const * const name, size_t num, va_list args);
 void create_virtual_table(
 		struct Database_Handle dbh, char const * const name, size_t num, ...);
+void vinsert_into_table_impl(struct Table* table, size_t num, va_list args);
+void insert_into_table_impl(struct Table* table, size_t num, ...);
 void insert_into_impl(struct Tables* tables, char const * const table_name, size_t num, va_list args);
 void update_column(struct Column* column, void * data, size_t row);
 

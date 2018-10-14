@@ -7,9 +7,6 @@ int main()
 {
 	struct Database_Handle dbh = new_database();
 
-	create_table(dbh, "test", 0);	
-	create_table(dbh, "test2", 0);
-
 	struct Column column1 = {
 		.name = "Column1",
 		.type = datatype_uint,
@@ -45,7 +42,7 @@ int main()
 		insert_into(dbh, "table_with_columns", 2,
 				column1_data, column2_data);
 	}
-
+	
 	// Inserting data into the database
 	{
 		int column1_data_data = 50;
@@ -87,22 +84,6 @@ int main()
 		.data = test_string_data
 	};
 	insert_into(dbh, "table_with_char", 1, column_StringStuff);
-
-	/*
-	struct Query test_query4 = {
-		.table_name = "table_with_char"
-	};
-	printf("\n");
-	it = query(dbh, test_query4);
-
-	// Printing out column headers
-	print_column_headers(it);
-
-	// Printing out data
-	{
-		while(iterate(&it) != ITERATE_END)
-			print_column_data(it);
-	} //*/
 
 	printf("\n query(\"tables\"); \n");
 

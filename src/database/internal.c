@@ -55,6 +55,40 @@ struct Column* lookup_column(struct Database_Handle dbh,
 	);
 }
 
+struct Table* vcreate_single_table_impl(char const * const name, size_t num, va_list args)
+{
+	struct Table* new_table = calloc(1, sizeof(struct Table));
+	new_table->number_of_rows = 0;
+	new_table->rows_allocated = DATABASE_MAX_ROWS;
+	new_table->datalayout = DATALAYOUT_COLOUMN_ORIENTED;
+	new_table->number_of_columns = num;
+
+	// Copying table name inn
+	size_t name_len = strlen(name) + 1;
+	new_table->name = calloc(name_len, sizeof(char));
+	strncpy(new_table->name, name, name_len);
+
+	for(size_t i=0; i<num; i++) {
+		struct Column* current_column = &(new_table->columns[i]);
+		*current_column = va_arg(args, struct Column);
+
+		void *data = calloc(DATABASE_MAX_ROWS, column_offset_pr_row(current_column));
+		assert(data);
+		current_column->data_begin = data;
+	}
+
+	return new_table;
+}
+
+struct Table* create_single_table_impl(char const * const name, size_t num, ...)
+{
+	va_list args;
+	va_start(args, num);
+	struct Table* new_table = vcreate_single_table_impl(name, num, args);
+	va_end(args);
+	return new_table;
+}
+
 void create_table_impl(struct Tables* tables, char const * const name, size_t num, va_list args)
 {
 	struct Table new_table = {
@@ -107,9 +141,8 @@ void destory_table(struct Database_Handle dbh, char const * const name)
 	}
 }
 
-void insert_into_impl(struct Tables* tables, char const * const table_name, size_t num, va_list args)
+void vinsert_into_table_impl(struct Table* table, size_t num, va_list args)
 {
-	struct Table* table = lookup_table_impl(tables, table_name);
 	for(size_t i=0; i<num; i++) {
 		struct InsertData data = va_arg(args, struct InsertData);
 		struct Column* column = lookup_column_impl(table, data.name);	
@@ -122,6 +155,21 @@ void insert_into_impl(struct Tables* tables, char const * const table_name, size
 	}
 
 	table->number_of_rows++;
+}
+
+void insert_into_table_impl(struct Table* table, size_t num, ...)
+{
+	va_list arg_list;
+	va_start(arg_list, num);
+	vinsert_into_table_impl(table, num, arg_list);
+	va_end(arg_list);
+}
+
+void insert_into_impl(struct Tables* tables, char const * const table_name, size_t num, va_list args)
+{
+	struct Table* table = lookup_table_impl(tables, table_name);
+	assert(table);
+	vinsert_into_table_impl(table, num, args);
 }
 
 void update_column(struct Column* column, void * data, size_t row)
