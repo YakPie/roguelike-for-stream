@@ -1,9 +1,5 @@
 #include "systems.h"
 #include "../database/repl.h"
-#include "../systems/dummy_system.h"
-#include "../systems/rendering_ncurses.h"
-#include "../systems/frame_counter.h"
-#include "../systems/repl_subsystem.h"
 
 void subsystem_empty_func(struct Database_Handle dbh) 
 {
@@ -42,7 +38,7 @@ void register_subsystem_s(struct Database_Handle dbh, struct subsystem s )
 	register_subsystem(dbh, s.name, s.init_ptr, s.update_ptr, s.cleanup_ptr);
 }
 
-void systems_init(struct Database_Handle dbh)
+void systems_setup(struct Database_Handle dbh)
 {
 	// Create a database table for sub systems
 	{
@@ -68,13 +64,10 @@ void systems_init(struct Database_Handle dbh)
 		};
 		create_table(dbh, "subsystems", 4, name, init_ptr, update_ptr, cleanup_ptr);
 	}
+}
 
-	// For each subsystem add them to the database table
-	register_subsystem_s(dbh, dummy_system);
-	register_subsystem_s(dbh, rendering_ncurses);
-	register_subsystem_s(dbh, frame_counter);
-	register_subsystem_s(dbh, repl_subsystem);
-	
+void systems_init(struct Database_Handle dbh)
+{
 	// Call init on sub_systems?
 	{
 		struct Iterator it = prepare_query(dbh, "subsystems", 0);

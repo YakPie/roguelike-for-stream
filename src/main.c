@@ -14,6 +14,11 @@
 #include "systems/rendering_ncurses.h"
 #include "systems/grammer_parser.h"
 
+#include "systems/dummy_system.h"
+#include "systems/rendering_ncurses.h"
+#include "systems/frame_counter.h"
+#include "systems/repl_subsystem.h"
+
 int main(int argc, char **argv)
 {
 	srand((unsigned)time(NULL));
@@ -41,6 +46,14 @@ int main(int argc, char **argv)
 	struct Database_Handle dbh = new_database();
 
 	// Initialize systems
+	systems_setup(dbh);
+
+	// For each subsystem add them to the database table
+	register_subsystem_s(dbh, dummy_system);
+	register_subsystem_s(dbh, rendering_ncurses);
+	register_subsystem_s(dbh, frame_counter);
+	register_subsystem_s(dbh, repl_subsystem);
+	
 	systems_init(dbh);
 
 	int ch = 0;

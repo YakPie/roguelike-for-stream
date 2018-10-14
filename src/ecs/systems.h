@@ -45,6 +45,7 @@ void register_subsystem(
 
 void register_subsystem_s(struct Database_Handle dbh, struct subsystem subsystem );
 
+void systems_setup(struct Database_Handle dbh);
 void systems_init(struct Database_Handle dbh);
 void systems_update(struct Database_Handle dbh);
 void systems_unload(struct Database_Handle dbh);
