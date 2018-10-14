@@ -1,4 +1,4 @@
-#include "../components/components.h"
+#include "../ecs/components.h"
 #include "grammer_parser.h"
 
 #include <string.h>

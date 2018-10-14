@@ -1,5 +1,5 @@
 #include "repl_subsystem.h"
-#include "../components/components.h"
+#include "../ecs/components.h"
 #include "../database/repl.h"
 #include <ncurses.h>
 

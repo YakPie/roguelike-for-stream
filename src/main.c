@@ -6,10 +6,10 @@
 #include <ncurses.h>
 #undef KEY_ENTER
 
-#include "components/components.h"
 #include "database/core.h"
 #include "database/repl.h"
-#include "systems/systems.h"
+#include "ecs/components.h"
+#include "ecs/systems.h"
 #include "systems/pcg_dungeon.h"
 #include "systems/rendering_ncurses.h"
 #include "systems/grammer_parser.h"

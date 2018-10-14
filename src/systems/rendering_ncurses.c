@@ -1,4 +1,4 @@
-#include "../components/components.h"
+#include "../ecs/components.h"
 #include "rendering_ncurses.h"
 #include <ncurses.h>
 #undef KEY_ENTER

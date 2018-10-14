@@ -1,9 +1,9 @@
 #include "systems.h"
 #include "../database/repl.h"
-#include "dummy_system.h"
-#include "rendering_ncurses.h"
-#include "frame_counter.h"
-#include "repl_subsystem.h"
+#include "../systems/dummy_system.h"
+#include "../systems/rendering_ncurses.h"
+#include "../systems/frame_counter.h"
+#include "../systems/repl_subsystem.h"
 
 void subsystem_empty_func(struct Database_Handle dbh) 
 {

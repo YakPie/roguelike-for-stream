@@ -24,9 +24,11 @@ endif()
 find_package("Curses" REQUIRED)
 
 add_library(game
-	src/entity/entity.h
-	src/components/components.c
-	src/components/components.h
+	src/ecs/entity.h
+	src/ecs/components.c
+	src/ecs/components.h
+	src/ecs/systems.h
+	src/ecs/systems.c
 	src/database/core.h
 	src/database/core.c
 	src/database/query.c
@@ -43,8 +45,6 @@ add_library(game
 	src/systems/pcg_dungeon.c
 	src/systems/rendering_ncurses.c
 	src/systems/rendering_ncurses.h
-	src/systems/systems.h
-	src/systems/systems.c
 	src/systems/dummy_system.h
 	src/systems/dummy_system.c
 	src/systems/frame_counter.h

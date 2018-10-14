@@ -1,4 +1,4 @@
-#include "../components/components.h"
+#include "../ecs/components.h"
 #include "pcg_dungeon.h"
 #include <string.h>
 #include <ncurses.h>

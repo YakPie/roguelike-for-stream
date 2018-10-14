@@ -1,7 +1,7 @@
 #ifndef repl_subsystem_h
 #define repl_subsystem_h
 
-#include "systems.h"
+#include "../ecs/systems.h"
 
 void repl_subsystem_update(struct Database_Handle dbh);
 

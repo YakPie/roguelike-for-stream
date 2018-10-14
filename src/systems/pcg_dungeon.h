@@ -1,7 +1,7 @@
 #ifndef PCG_DUNGEON_H 
 #define PCG_DUNGEON_H 
 
-#include "../components/components.h"
+#include "../ecs/components.h"
 
 char* replace(struct Rules* rules, int rules_length, char check);
 

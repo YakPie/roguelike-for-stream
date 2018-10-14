@@ -1,8 +1,8 @@
 #ifndef RENDERING_NCURSES_H 
 #define RENDERING_NCURSES_H 
 
-#include "../components/components.h"
-#include "systems.h"
+#include "../ecs/components.h"
+#include "../ecs/systems.h"
 
 void print_door(struct Point current, struct Point towards,
 	struct Point offset, int room_width, int room_height);
