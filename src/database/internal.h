@@ -64,11 +64,17 @@ static struct Datatype datatype_string = {
 	.kind = NULL_TERMINATED_KIND 
 };
 
+enum ColumnType {
+	COLUMNTYPE_NORMAL,
+	COLUMNTYPE_REFRENCE
+};
+
 struct Column
 {
 	char *name;
 	struct Datatype type;
 	size_t count;
+	enum ColumnType column_type;
 
 	// Only for column oriented layout
 	void *data_begin; 
@@ -112,6 +118,9 @@ struct Query
 	char *table_name;
 	int query_schema;
 	// list column names
+	char *columns[DATABASE_MAX_COLUMNS];
+	size_t number_of_columns;
+
 	// filter method (WHERE)
 };
 
@@ -165,6 +174,9 @@ struct Column* lookup_column(struct Database_Handle dbh,
 void* get_ptr_column_impl(struct Column* column, size_t row);
 size_t column_offset_pr_row(struct Column* column);
 void destory_table(struct Database_Handle dbh, char const * const name);
+void add_ref_column_to_table(struct Table* table, struct Column col);
+void add_column_to_table(struct Table* table, struct Column col);
+struct Table* create_empty_table(char const * const name);
 struct Table* vcreate_single_table_impl(char const * const name, size_t num, va_list args);
 struct Table* create_single_table_impl(char const * const name, size_t num, ...);
 void create_table_impl(

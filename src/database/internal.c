@@ -55,27 +55,49 @@ struct Column* lookup_column(struct Database_Handle dbh,
 	);
 }
 
-struct Table* vcreate_single_table_impl(char const * const name, size_t num, va_list args)
+void add_ref_column_to_table(struct Table* table, struct Column col)
+{
+	struct Column* current_column = &(table->columns[table->number_of_columns]);
+	assert(current_column);
+	*current_column = col;
+	table->number_of_columns++;
+	current_column->column_type = COLUMNTYPE_REFRENCE;
+}
+
+void add_column_to_table(struct Table* table, struct Column col) 
+{
+	struct Column* current_column = &(table->columns[table->number_of_columns]);
+	assert(current_column);
+	*current_column = col;
+	void *data = calloc(DATABASE_MAX_ROWS, column_offset_pr_row(current_column));
+	assert(data);
+	current_column->data_begin = data;
+	table->number_of_columns++;
+	current_column->column_type = COLUMNTYPE_NORMAL;
+}
+
+struct Table* create_empty_table(char const * const name)
 {
 	struct Table* new_table = calloc(1, sizeof(struct Table));
 	new_table->number_of_rows = 0;
 	new_table->rows_allocated = DATABASE_MAX_ROWS;
 	new_table->datalayout = DATALAYOUT_COLOUMN_ORIENTED;
-	new_table->number_of_columns = num;
+	new_table->number_of_columns = 0;
 
 	// Copying table name inn
 	size_t name_len = strlen(name) + 1;
 	new_table->name = calloc(name_len, sizeof(char));
 	strncpy(new_table->name, name, name_len);
 
-	for(size_t i=0; i<num; i++) {
-		struct Column* current_column = &(new_table->columns[i]);
-		*current_column = va_arg(args, struct Column);
+	return new_table;
+}
 
-		void *data = calloc(DATABASE_MAX_ROWS, column_offset_pr_row(current_column));
-		assert(data);
-		current_column->data_begin = data;
-	}
+struct Table* vcreate_single_table_impl(char const * const name, size_t num, va_list args)
+{
+	struct Table* new_table = create_empty_table(name);
+
+	for(size_t i=0; i<num; i++)
+		add_column_to_table(new_table, va_arg(args, struct Column));
 
 	return new_table;
 }

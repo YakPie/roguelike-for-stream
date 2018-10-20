@@ -73,6 +73,18 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 		}
 	}
 
+	if(query.number_of_columns > 0) {
+		struct Table* table_ref = it.table;
+		it.table = create_empty_table("tmp");
+		it.table->number_of_rows = table_ref->number_of_rows;
+
+		for(size_t i = 0; i < query.number_of_columns; i++) {
+			struct Column* col = lookup_column_impl(table_ref, query.columns[i]);
+			assert(col);
+			add_ref_column_to_table(it.table, *col);					
+		}
+	}
+
 	return it;
 }
 

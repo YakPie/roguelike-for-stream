@@ -9,7 +9,7 @@ enum {
 
 struct YGQL_Token ygql_scanner(struct ParserIt* it) {
 	struct YGQL_Token token = {
-		.type = YGQL_TOKENTYPE_UNKOWN ,
+		.type = YGQL_TOKENTYPE_UNKOWN,
 		.data = calloc(BUFFER_SIZE, sizeof(char))
 	};
 	char const * const query = it->query + it->offset;
@@ -17,6 +17,18 @@ struct YGQL_Token ygql_scanner(struct ParserIt* it) {
 	switch(query[0]) {
 		case '.':
 			token.type = YGQL_TOKENTYPE_DOT;
+			it->offset += 1;
+			return token;
+		case '(':
+			token.type = YGQL_TOKENTYPE_OPEN_PARENT;
+			it->offset += 1;
+			return token;
+		case ')':
+			token.type = YGQL_TOKENTYPE_CLOSE_PARENT;
+			it->offset += 1;
+			return token;
+		case ',':
+			token.type = YGQL_TOKENTYPE_SEPERATOR;
 			it->offset += 1;
 			return token;
 		case '\0':
@@ -43,6 +55,12 @@ char* ygql_token_descriptor(enum YGQL_TokenType type) {
 			return "TOKENTYPE_DOT";
 		case YGQL_TOKENTYPE_UNKOWN:
 			return "TOKENTYPE_UNKNOWN";
+		case YGQL_TOKENTYPE_OPEN_PARENT:
+			return "TOKENTYPE_OPEN_PARENT";
+		case YGQL_TOKENTYPE_CLOSE_PARENT:
+			return "TOKENTYPE_CLOSE_PARENT";
+		case YGQL_TOKENTYPE_SEPERATOR:
+			return "TOKENTYPE_SEPERATOR";
 		case YGQL_TOKENTYPE_EOL:
 			return "TOKENTYPE_EOL";
 	}
@@ -66,6 +84,40 @@ static struct YGQL_Token ygql_expected_token(struct YGQL_Token cur, enum YGQL_To
 	exit(1);
 }
 
+static void parse_schema_query(
+		struct ParserIt* it, struct YGQL_Token* token, struct Query* query)
+{
+	if(token->type == YGQL_TOKENTYPE_DOT) {
+		struct YGQL_Token token2
+			= ygql_expected_token(ygql_scanner(it), YGQL_TOKENTYPE_NAME);
+
+		if(strcmp(token2.data, "schema") == 0)
+			query->query_schema = 1;		
+	}
+}
+
+static void parse_columns(
+	struct ParserIt* it, struct YGQL_Token* token, struct Query* query)
+{
+	if(token->type == YGQL_TOKENTYPE_OPEN_PARENT) {
+		struct YGQL_Token token2 = ygql_scanner(it);	
+		
+next_column:
+		if(token2.type == YGQL_TOKENTYPE_NAME) {
+			query->columns[query->number_of_columns] = token2.data;
+			query->number_of_columns++;
+
+			token2 = ygql_scanner(it);
+			if(token2.type == YGQL_TOKENTYPE_SEPERATOR) {
+				token2 = ygql_scanner(it);
+				goto next_column;
+			}
+		};
+
+		ygql_expected_token(token2, YGQL_TOKENTYPE_CLOSE_PARENT);
+	}
+}
+
 struct Query parse_query(char const * const const_query)
 {
 	struct ParserIt it = {
@@ -79,18 +131,24 @@ struct Query parse_query(char const * const const_query)
 	);
 
 	struct Query q = {
-		.table_name = token.data
+		.table_name = token.data,
+		.number_of_columns = 0
 	};
 
+parse_next:
 	token = ygql_scanner(&it);
-	if(token.type == YGQL_TOKENTYPE_EOL)
-		return q;
-
-	ygql_expected_token(token, YGQL_TOKENTYPE_DOT);
-	token = ygql_expected_token(ygql_scanner(&it), YGQL_TOKENTYPE_NAME);
-
-	if(strcmp(token.data, "schema") == 0)
-		q.query_schema = 1;		
+	switch(token.type) {
+		case YGQL_TOKENTYPE_EOL:
+			return q;
+		case YGQL_TOKENTYPE_DOT:
+			parse_schema_query(&it, &token, &q);
+			goto parse_next;
+		case YGQL_TOKENTYPE_OPEN_PARENT:
+			parse_columns(&it, &token, &q);
+			break;
+		default:
+			break;
+	}
 
 	return q;
 }

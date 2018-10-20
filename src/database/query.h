@@ -45,9 +45,9 @@
 // 	delete position(10, 5, 15).
 enum YGQL_TokenType {
 	YGQL_TOKENTYPE_NAME,           // [a-zA-Z][a-zA-Z0-9_]*
-//	YGQL_TOKENTYPE_OPEN_PARENT,    // (
-//	YGQL_TOKENTYPE_CLOSE_PARENT,   // )
-//	YGQL_TOKENTYPE_SEPERATOR,      // ,
+	YGQL_TOKENTYPE_OPEN_PARENT,    // (
+	YGQL_TOKENTYPE_CLOSE_PARENT,   // )
+	YGQL_TOKENTYPE_SEPERATOR,      // ,
 //	YGQL_TOKENTYPE_QUESTIONMARK,   // ?
 	YGQL_TOKENTYPE_DOT,            // .
 //	YGQL_TOKENTYPE_DELETE,         // delete
