@@ -40,6 +40,12 @@ static struct Datatype datatype_uint = {
 	.kind = VALUE_KIND
 };
 
+static struct Datatype datatype_size = {
+	.name = "size",
+	.size = sizeof(size_t),
+	.kind = VALUE_KIND
+};
+
 static struct Datatype datatype_float = {
 	.name = "float",
 	.size = sizeof(float),

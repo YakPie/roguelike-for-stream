@@ -6,6 +6,8 @@ void print_column(void *it, struct Datatype dt) {
 		printf("%10d\t", *(int *)it);
 	} else if(strcmp(dt.name, "uint") == 0) {
 		printf("%10u\t", *(unsigned int *)it);
+	} else if(strcmp(dt.name, "size") == 0) {
+		printf("%10zu\t", *(size_t *)it);
 	} else if(strcmp(dt.name, "float") == 0) {
 		printf("%10f\t", *(double *)it);
 	} else if(strcmp(dt.name, "char") == 0) {

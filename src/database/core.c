@@ -32,9 +32,6 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 	it.query_status = QUERYSTATUS_FIRST;
 
 	if(query.query_schema) {
-		// TODO: implement schema querying
-		//fprintf(stderr, "Querying schema is not yet implemented\n");
-		//it.query_status = QUERYSTATUS_INVALID_QUERY;
 		struct Table* table_ref = it.table;
 	
 		{
@@ -43,7 +40,17 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 				.type = datatype_string,
 				.count = 255
 			};
-			it.table = create_single_table_impl("tmp", 1, name);
+			struct Column type = {
+				.name = "type",
+				.type = datatype_string,
+				.count = 255
+			};
+			struct Column count = {
+				.name = "count",
+				.type = datatype_size,
+				.count = 1 
+			};
+			it.table = create_single_table_impl("tmp_schema", 3, name, type, count);
 		}
 
 		for(size_t col = 0; col < table_ref->number_of_columns; col++) {
@@ -52,7 +59,17 @@ struct Iterator query(struct Database_Handle dbh, struct Query query)
 				.name = "name",
 				.data = column_name
 			};
-			insert_into_table_impl(it.table, 1, name);
+			char* column_type = table_ref->columns[col].type.name;
+			struct InsertData type = {
+				.name = "type",
+				.data = column_type
+			};
+			size_t column_count = table_ref->columns[col].count;
+			struct InsertData count = {
+				.name = "count",
+				.data = &column_count
+			};
+			insert_into_table_impl(it.table, 3, name, type, count);
 		}
 	}
 
