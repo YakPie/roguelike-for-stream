@@ -18,7 +18,8 @@ if(("${CMAKE_C_COMPILER_ID}" STREQUAL "CLANG") OR ("${CMAKE_C_COMPILER_ID}" STRE
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} \
 	-Weverything \
 	-Wno-padded \
-	-Wno-class-varargs")
+	-Wno-class-varargs \
+	-Wno-extern-initializer")
 endif()
 
 find_package("Curses" REQUIRED)
@@ -45,11 +46,8 @@ add_library(game
 	src/systems/pcg_dungeon.c
 	src/systems/rendering_ncurses.c
 	src/systems/rendering_ncurses.h
-	src/systems/dummy_system.h
 	src/systems/dummy_system.c
-	src/systems/frame_counter.h
 	src/systems/frame_counter.c
-	src/systems/repl_subsystem.h
 	src/systems/repl_subsystem.c
 	)
 

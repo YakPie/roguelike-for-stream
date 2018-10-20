@@ -1,9 +1,9 @@
-#include "repl_subsystem.h"
+#include "../ecs/systems.h"
 #include "../ecs/components.h"
 #include "../database/repl.h"
 #include <ncurses.h>
 
-void repl_subsystem_update(struct Database_Handle dbh)
+static void repl_subsystem_update(struct Database_Handle dbh)
 {
 	int gamestate;
 	struct Query q = {
@@ -30,3 +30,10 @@ void repl_subsystem_update(struct Database_Handle dbh)
 		update_column(gamestate_column, &gamestate, 0);
 	}
 }
+
+extern struct subsystem repl_subsystem = {
+	.name = "repl",
+	.init_ptr = &subsystem_empty_func,
+	.update_ptr = &repl_subsystem_update,
+	.cleanup_ptr = &subsystem_empty_func
+};

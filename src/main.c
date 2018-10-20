@@ -14,10 +14,9 @@
 #include "systems/rendering_ncurses.h"
 #include "systems/grammer_parser.h"
 
-#include "systems/dummy_system.h"
-#include "systems/rendering_ncurses.h"
-#include "systems/frame_counter.h"
-#include "systems/repl_subsystem.h"
+extern struct subsystem dummy_subsystem;
+extern struct subsystem frame_counter_subsystem;
+extern struct subsystem repl_subsystem;
 
 int main(int argc, char **argv)
 {
@@ -49,9 +48,9 @@ int main(int argc, char **argv)
 	systems_setup(dbh);
 
 	// For each subsystem add them to the database table
-	register_subsystem_s(dbh, dummy_system);
+	register_subsystem_s(dbh, dummy_subsystem);
 	register_subsystem_s(dbh, rendering_ncurses);
-	register_subsystem_s(dbh, frame_counter);
+	register_subsystem_s(dbh, frame_counter_subsystem);
 	register_subsystem_s(dbh, repl_subsystem);
 	
 	systems_init(dbh);
